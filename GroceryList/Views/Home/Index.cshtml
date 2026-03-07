@@ -18,17 +18,20 @@
     <ul class="list-group mb-3">
         @foreach (var item in Model)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
+            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row" style="cursor:pointer">
+                <div class="d-flex align-items-center gap-2" onclick="toggleRow(this)">
+                    <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row').querySelector('.d-flex'))" />
+                    <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
+                </div>
                 <div class="d-flex align-items-center gap-2">
                     <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <input type="text" name="category" value="@item.Category" class="form-control form-control-sm" style="width:140px" placeholder="Category" />
-                        <button class="btn btn-sm btn-outline-secondary" type="submit">Save</button>
+                        <input type="text" name="category" value="@item.Category" class="form-control form-control-sm" style="width:140px" placeholder="Category" onclick="event.stopPropagation()" />
+                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">Save</button>
                     </form>
                     <form asp-action="Remove" method="post" class="mb-0">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+                        <button class="btn btn-sm btn-danger" type="submit" onclick="event.stopPropagation()">Remove</button>
                     </form>
                 </div>
             </li>
@@ -43,3 +46,23 @@ else
 {
     <p class="text-muted">No items yet. Add some above!</p>
 }
+
+<style>
+    .grocery-row.selected {
+        background-color: #d1e7dd;
+    }
+    .grocery-row.selected .item-name {
+        text-decoration: line-through;
+        color: #6c757d;
+    }
+</style>
+
+<script>
+    function toggleRow(el) {
+        const row = el.closest('.grocery-row');
+        const checkbox = row.querySelector('.row-checkbox');
+        const isSelected = row.classList.toggle('selected');
+        checkbox.checked = isSelected;
+    }
+</script>
+
