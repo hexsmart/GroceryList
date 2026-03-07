@@ -29,6 +29,19 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public IActionResult UpdateCategory(Guid id, string category)
+    {
+        var items = _groceryService.GetAll();
+        var item = items.FirstOrDefault(i => i.Id == id);
+        if (item != null)
+        {
+            item.Category = category ?? "Staple";
+            _groceryService.Save(items);
+        }
+        return RedirectToAction(nameof(Index));
+    }
+
+    [HttpPost]
     public IActionResult Remove(Guid id)
     {
         _groceryService.RemoveItem(id);
