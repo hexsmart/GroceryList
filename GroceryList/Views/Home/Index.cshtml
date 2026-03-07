@@ -1,4 +1,5 @@
 @model List<GroceryList.Models.GroceryItem>
+@using GroceryList.Helpers
 @{
     ViewData["Title"] = "Grocery List";
 }
@@ -18,7 +19,7 @@
         @foreach (var item in Model)
         {
             <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">@item.Name</span>
+                <span class="fw-semibold">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
                 <div class="d-flex align-items-center gap-2">
                     <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
                         <input type="hidden" name="id" value="@item.Id" />
