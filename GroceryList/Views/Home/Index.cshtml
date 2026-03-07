@@ -1,0 +1,37 @@
+@model List<GroceryList.Models.GroceryItem>
+@{
+    ViewData["Title"] = "Grocery List";
+}
+
+<h1 class="mb-4">🛒 Grocery List</h1>
+
+<form asp-action="Add" method="post" class="mb-4">
+    <div class="input-group">
+        <input type="text" name="items" class="form-control" placeholder="Enter items separated by commas (e.g. milk, eggs, bread)" required />
+        <button class="btn btn-primary" type="submit">Add Items</button>
+    </div>
+</form>
+
+@if (Model.Any())
+{
+    <ul class="list-group mb-3">
+        @foreach (var item in Model)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                @item.Name
+                <form asp-action="Remove" method="post" class="mb-0">
+                    <input type="hidden" name="id" value="@item.Id" />
+                    <button class="btn btn-sm btn-danger" type="submit">Remove</button>
+                </form>
+            </li>
+        }
+    </ul>
+
+    <form asp-action="Clear" method="post">
+        <button class="btn btn-warning" type="submit" onclick="return confirm('Clear all items?')">Clear All</button>
+    </form>
+}
+else
+{
+    <p class="text-muted">No items yet. Add some above!</p>
+}
