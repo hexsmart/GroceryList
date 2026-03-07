@@ -30,9 +30,12 @@ public class GroceryService
         var items = GetAll();
         var names = commaSeparated.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         foreach (var name in names)
-            items.Add(new GroceryItem { Name = name });
+            items.Add(new GroceryItem { Name = Capitalize(name) });
         Save(items);
     }
+
+    private static string Capitalize(string s) =>
+        string.IsNullOrWhiteSpace(s) ? s : char.ToUpper(s[0]) + s.Substring(1);
 
     public void RemoveItem(Guid id)
     {
