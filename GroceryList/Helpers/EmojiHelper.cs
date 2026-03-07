@@ -11,7 +11,7 @@ public static class EmojiHelper
         { "grapes", "🍇" }, { "strawberry", "🍓" }, { "strawberries", "🍓" }, { "watermelon", "🍉" }, { "lemon", "🍋" }, { "lemons", "🍋" },
         { "peach", "🍑" }, { "peaches", "🍑" }, { "pear", "🍐" }, { "pears", "🍐" }, { "cherry", "🍒" }, { "cherries", "🍒" },
         { "mango", "🥭" }, { "pineapple", "🍍" }, { "coconut", "🥥" }, { "avocado", "🥑" }, { "tomato", "🍅" }, { "tomatoes", "🍅" },
-        { "carrot", "🥕" }, { "carrots", "🥕" }, { "corn", "🌽" }, { "broccoli", "🥦" }, { "lettuce", "🥬" }, { "spinach", "🥬" },
+        { "carrot", "🥕" }, { "carrots", "🥕" }, { "corn", "🌽" }, { "broccoli", "🥦" }, { "lettuce", "🥬" }, { "salad", "🥬" },{ "spinach", "🥬" },
         { "cucumber", "🥒" }, { "peppers", "🫑" }, { "pepper", "🫑" }, { "onion", "🧅" }, { "onions", "🧅" }, { "garlic", "🧄" },
         { "potato", "🥔" }, { "potatoes", "🥔" }, { "mushroom", "🍄" }, { "mushrooms", "🍄" }, { "eggplant", "🍆" },
         // Meat & Seafood

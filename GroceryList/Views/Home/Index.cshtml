@@ -18,9 +18,9 @@
     <ul class="list-group mb-3">
         @foreach (var item in Model)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row" style="cursor:pointer">
-                <div class="d-flex align-items-center gap-2" onclick="toggleRow(this)">
-                    <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row').querySelector('.d-flex'))" />
+            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row" style="cursor:pointer" onclick="toggleRow(this)">
+                <div class="d-flex align-items-center gap-2">
+                    <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
                     <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
                 </div>
                 <div class="d-flex align-items-center gap-2">
@@ -58,8 +58,7 @@ else
 </style>
 
 <script>
-    function toggleRow(el) {
-        const row = el.closest('.grocery-row');
+    function toggleRow(row) {
         const checkbox = row.querySelector('.row-checkbox');
         const isSelected = row.classList.toggle('selected');
         checkbox.checked = isSelected;
