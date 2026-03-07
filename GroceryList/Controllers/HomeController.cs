@@ -20,6 +20,11 @@ public class HomeController : Controller
         return View(items);
     }
 
+    public IActionResult Shop()
+    {
+        return View();
+    }
+
     [HttpPost]
     public IActionResult Add(string items)
     {
