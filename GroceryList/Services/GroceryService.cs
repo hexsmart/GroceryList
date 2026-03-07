@@ -16,7 +16,8 @@ public class GroceryService
     {
         if (!File.Exists(_filePath)) return new List<GroceryItem>();
         var json = File.ReadAllText(_filePath);
-        return JsonSerializer.Deserialize<List<GroceryItem>>(json) ?? new List<GroceryItem>();
+        var items = JsonSerializer.Deserialize<List<GroceryItem>>(json) ?? new List<GroceryItem>();
+        return items.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
     public void Save(List<GroceryItem> items)
