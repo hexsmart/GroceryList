@@ -8,6 +8,8 @@ This is an exercise in using NEXA/CoPilot to create a project from scratch.  I'm
 
 NOTE: That **CoPilot** will add its name to the changesets.
 
+NEXA is adding to the prompts below after major milestones _(even minor ones)_
+
 ## 🤖 AI Prompts
 
 * 🆕 Created GitHub Repo
@@ -29,4 +31,3 @@ NOTE: That **CoPilot** will add its name to the changesets.
   * Checkbox reflects selected state
   * Green highlight + strikethrough on selected rows
 * 📝 Added `.gitignore` to exclude build artifacts and `groceries.json`
-
