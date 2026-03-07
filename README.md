@@ -1,4 +1,4 @@
-# Grocery List
+# 🛒 Grocery List
 
 A general grocery list application.
 
@@ -8,8 +8,12 @@ This is an exercise in using NEXA/CoPilot to create a project from scratch.  I'm
 
 NOTE: That **CoPilot** will add its name to the changesets.
 
-## Prompts
+## AI Prompts
 
 * Created GitHub Repo
   * It needed an access token because `gh auth` didn't work.
 * Created Template Project
+  * Grocery list website
+  * Add comma separated items
+  * persists to JSON file
+
