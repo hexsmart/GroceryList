@@ -15,10 +15,14 @@
 
 @if (Model.Any())
 {
-    <ul class="list-group mb-3">
+    <ul class="list-group mb-4">
         @foreach (var item in Model)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row" style="cursor:pointer" onclick="toggleRow(this)">
+            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row"
+                style="cursor:pointer"
+                data-id="@item.Id"
+                data-name="@EmojiHelper.GetEmoji(item.Name) @item.Name"
+                onclick="toggleRow(this)">
                 <div class="d-flex align-items-center gap-2">
                     <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
                     <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
@@ -38,7 +42,10 @@
         }
     </ul>
 
-
+    <div id="selected-section" style="display:none">
+        <h4 class="mb-2">🧺 In My Cart</h4>
+        <ul class="list-group" id="selected-list"></ul>
+    </div>
 }
 else
 {
@@ -60,6 +67,43 @@ else
         const checkbox = row.querySelector('.row-checkbox');
         const isSelected = row.classList.toggle('selected');
         checkbox.checked = isSelected;
+
+        const id = row.dataset.id;
+        const name = row.dataset.name;
+
+        if (isSelected) {
+            addToCart(id, name);
+        } else {
+            removeFromCart(id);
+        }
+    }
+
+    function addToCart(id, name) {
+        const list = document.getElementById('selected-list');
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.id = 'cart-' + id;
+        li.innerHTML = `<span class="fw-semibold">${name}</span>
+            <button class="btn btn-sm btn-danger" onclick="deselectItem('${id}')">Remove</button>`;
+        list.appendChild(li);
+        document.getElementById('selected-section').style.display = 'block';
+    }
+
+    function removeFromCart(id) {
+        const li = document.getElementById('cart-' + id);
+        if (li) li.remove();
+        if (document.getElementById('selected-list').children.length === 0) {
+            document.getElementById('selected-section').style.display = 'none';
+        }
+    }
+
+    function deselectItem(id) {
+        const row = document.querySelector(`.grocery-row[data-id="${id}"]`);
+        if (row) {
+            row.classList.remove('selected');
+            row.querySelector('.row-checkbox').checked = false;
+        }
+        removeFromCart(id);
     }
 </script>
 
