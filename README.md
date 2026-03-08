@@ -48,3 +48,16 @@ NEXA is adding to the prompts below after major milestones _(even minor ones)_
   * _(user can't edit on phone)_
 * 🔤 Alphabetized entries within each category in EmojiHelper
   * Categories also sorted alphabetically
+* 🏪 Added Store view
+  * Lists all items from EmojiHelper grouped by category
+  * Items already on grocery list show ✅ Added
+  * ➕ Add button adds item directly to grocery list
+  * Refactored EmojiHelper to use `StoreItem` records with Name, Emoji, Category
+* 🚫 Prevent duplicate items from being added
+* 🗂️ Category field changed to Staple / Other dropdown
+* ⭐ "Add Staples" button selects all Staple items at once
+* 🧹 Removed redundant Grocery List nav item (brand link navigates home)
+* 💾🗑️ Save and Remove buttons now use emoji icons
+* 🛒 Deleting an item from Home also removes it from the Shop cart
+* 🩶 Shop list rows turn grey when tapped (toggle on/off)
+* ✂️ Removed strikethrough on selected Home list items
