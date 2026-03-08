@@ -5,3 +5,4 @@
 - [ ] Display the categories on the home page, breaking out the items
   - [ ] Categories should be collapsible
   - [ ] Categories can be moved around
+  - [ ] Categories can be toggled on or off
