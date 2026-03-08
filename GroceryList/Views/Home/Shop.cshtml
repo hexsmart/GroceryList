@@ -1,5 +1,7 @@
 @{
     ViewData["Title"] = "Shop";
+    var categoryOrder = ViewBag.CategoryOrder as List<string> ?? new List<string>();
+    var categoryOrderJson = System.Text.Json.JsonSerializer.Serialize(categoryOrder);
 }
 
 <style>
@@ -7,58 +9,242 @@
         background-color: #dee2e6;
         color: #6c757d;
     }
+    .category-items.collapsed {
+        display: none;
+    }
 </style>
 
 <h1 class="mb-4">🧺 In My Cart</h1>
 
 <div id="empty-msg" class="text-muted" style="display:none">No items in your cart. Go select some from the <a href="/">Grocery List</a>!</div>
 
-<ul class="list-group mb-3" id="cart-list"></ul>
+<div id="shop-controls" class="mb-3 d-flex gap-2" style="display:none !important">
+    <button class="btn btn-outline-secondary" id="view-toggle-btn" onclick="toggleViewMode()">📋 Flat View</button>
+</div>
 
-<button id="clear-all-btn" class="btn btn-warning" onclick="clearAll()" style="display:none">🗑️ Clear All</button>
+<div id="category-container"></div>
+<ul class="list-group mb-3" id="flat-list" style="display:none"></ul>
 
+<button id="clear-all-btn" class="btn btn-warning mt-2" onclick="clearAll()" style="display:none">🗑️ Clear All</button>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
 <script>
     const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
-    const list = document.getElementById('cart-list');
-    const emptyMsg = document.getElementById('empty-msg');
-    const clearAllBtn = document.getElementById('clear-all-btn');
+    const catCollapsed = JSON.parse(localStorage.getItem('shopCatCollapsed') || '{}');
+    const savedOrder = @Html.Raw(categoryOrderJson);
+    let flatMode = localStorage.getItem('shopFlatMode') === 'true';
 
-    if (Object.keys(cart).length === 0) {
-        emptyMsg.style.display = 'block';
-    } else {
-        Object.entries(cart).forEach(([id, name]) => addCartItem(id, name));
-        clearAllBtn.style.display = 'inline-block';
+    // emoji/category lookup from EmojiHelper (duplicated client-side for Shop page)
+    const storeItems = [
+        {name:'Beer',emoji:'🍺',cat:'Beverages'},{name:'Coffee',emoji:'☕',cat:'Beverages'},
+        {name:'Diet Coke',emoji:'🥤',cat:'Beverages'},{name:'Juice',emoji:'🧃',cat:'Beverages'},
+        {name:'Soda',emoji:'🥤',cat:'Beverages'},{name:'Tea',emoji:'🍵',cat:'Beverages'},
+        {name:'Water',emoji:'💧',cat:'Beverages'},{name:'Wine',emoji:'🍷',cat:'Beverages'},
+        {name:'Bagel',emoji:'🥯',cat:'Bread & Grains'},{name:'Bread',emoji:'🍞',cat:'Bread & Grains'},
+        {name:'Cereal',emoji:'🥣',cat:'Bread & Grains'},{name:'Crackers',emoji:'🍘',cat:'Bread & Grains'},
+        {name:'Croissant',emoji:'🥐',cat:'Bread & Grains'},{name:'Noodles',emoji:'🍜',cat:'Bread & Grains'},
+        {name:'Oats',emoji:'🥣',cat:'Bread & Grains'},{name:'Pasta',emoji:'🍝',cat:'Bread & Grains'},
+        {name:'Rice',emoji:'🍚',cat:'Bread & Grains'},{name:'Tortillas',emoji:'🫓',cat:'Bread & Grains'},
+        {name:'Beans',emoji:'🫘',cat:'Condiments & Pantry'},{name:'Ketchup',emoji:'🍅',cat:'Condiments & Pantry'},
+        {name:'Mayonnaise',emoji:'🫙',cat:'Condiments & Pantry'},{name:'Mustard',emoji:'🟡',cat:'Condiments & Pantry'},
+        {name:'Oil',emoji:'🫙',cat:'Condiments & Pantry'},{name:'Salt',emoji:'🧂',cat:'Condiments & Pantry'},
+        {name:'Sauce',emoji:'🫙',cat:'Condiments & Pantry'},{name:'Soup',emoji:'🍲',cat:'Condiments & Pantry'},
+        {name:'Sugar',emoji:'🍬',cat:'Condiments & Pantry'},{name:'Vinegar',emoji:'🫙',cat:'Condiments & Pantry'},
+        {name:'Butter',emoji:'🧈',cat:'Dairy'},{name:'Cheese',emoji:'🧀',cat:'Dairy'},
+        {name:'Cream',emoji:'🥛',cat:'Dairy'},{name:'Eggs',emoji:'🥚',cat:'Dairy'},
+        {name:'Milk',emoji:'🥛',cat:'Dairy'},{name:'Yogurt',emoji:'🥛',cat:'Dairy'},
+        {name:'Frozen Foods',emoji:'🧊',cat:'Frozen'},{name:'Pizza',emoji:'🍕',cat:'Frozen'},
+        {name:'Detergent',emoji:'🫧',cat:'Household'},{name:'Paper Towels',emoji:'🧻',cat:'Household'},
+        {name:'Shampoo',emoji:'🧴',cat:'Household'},{name:'Soap',emoji:'🧼',cat:'Household'},
+        {name:'Toilet Paper',emoji:'🧻',cat:'Household'},{name:'Toothbrush',emoji:'🪥',cat:'Household'},
+        {name:'Toothpaste',emoji:'🪥',cat:'Household'},
+        {name:'Bacon',emoji:'🥓',cat:'Meat & Seafood'},{name:'Beef',emoji:'🥩',cat:'Meat & Seafood'},
+        {name:'Chicken',emoji:'🍗',cat:'Meat & Seafood'},{name:'Crab',emoji:'🦀',cat:'Meat & Seafood'},
+        {name:'Fish',emoji:'🐟',cat:'Meat & Seafood'},{name:'Ham',emoji:'🍖',cat:'Meat & Seafood'},
+        {name:'Lobster',emoji:'🦞',cat:'Meat & Seafood'},{name:'Pork',emoji:'🥩',cat:'Meat & Seafood'},
+        {name:'Salmon',emoji:'🐟',cat:'Meat & Seafood'},{name:'Sausage',emoji:'🌭',cat:'Meat & Seafood'},
+        {name:'Shrimp',emoji:'🍤',cat:'Meat & Seafood'},{name:'Steak',emoji:'🥩',cat:'Meat & Seafood'},
+        {name:'Turkey',emoji:'🦃',cat:'Meat & Seafood'},
+        {name:'Apple',emoji:'🍎',cat:'Produce'},{name:'Avocado',emoji:'🥑',cat:'Produce'},
+        {name:'Banana',emoji:'🍌',cat:'Produce'},{name:'Broccoli',emoji:'🥦',cat:'Produce'},
+        {name:'Carrot',emoji:'🥕',cat:'Produce'},{name:'Cherries',emoji:'🍒',cat:'Produce'},
+        {name:'Coconut',emoji:'🥥',cat:'Produce'},{name:'Corn',emoji:'🌽',cat:'Produce'},
+        {name:'Cucumber',emoji:'🥒',cat:'Produce'},{name:'Eggplant',emoji:'🍆',cat:'Produce'},
+        {name:'Garlic',emoji:'🧄',cat:'Produce'},{name:'Grapes',emoji:'🍇',cat:'Produce'},
+        {name:'Lemon',emoji:'🍋',cat:'Produce'},{name:'Lettuce',emoji:'🥬',cat:'Produce'},
+        {name:'Mango',emoji:'🥭',cat:'Produce'},{name:'Mushrooms',emoji:'🍄',cat:'Produce'},
+        {name:'Onion',emoji:'🧅',cat:'Produce'},{name:'Orange',emoji:'🍊',cat:'Produce'},
+        {name:'Peach',emoji:'🍑',cat:'Produce'},{name:'Pear',emoji:'🍐',cat:'Produce'},
+        {name:'Peppers',emoji:'🫑',cat:'Produce'},{name:'Pineapple',emoji:'🍍',cat:'Produce'},
+        {name:'Potato',emoji:'🥔',cat:'Produce'},{name:'Spinach',emoji:'🥬',cat:'Produce'},
+        {name:'Strawberries',emoji:'🍓',cat:'Produce'},{name:'Tomato',emoji:'🍅',cat:'Produce'},
+        {name:'Watermelon',emoji:'🍉',cat:'Produce'},
+        {name:'Cake',emoji:'🎂',cat:'Snacks & Sweets'},{name:'Candy',emoji:'🍬',cat:'Snacks & Sweets'},
+        {name:'Chips',emoji:'🍟',cat:'Snacks & Sweets'},{name:'Chocolate',emoji:'🍫',cat:'Snacks & Sweets'},
+        {name:'Cookies',emoji:'🍪',cat:'Snacks & Sweets'},{name:'Honey',emoji:'🍯',cat:'Snacks & Sweets'},
+        {name:'Ice Cream',emoji:'🍦',cat:'Snacks & Sweets'},{name:'Nuts',emoji:'🥜',cat:'Snacks & Sweets'},
+        {name:'Popcorn',emoji:'🍿',cat:'Snacks & Sweets'},
+    ];
+
+    function getCategory(name) {
+        const lower = name.toLowerCase();
+        const match = storeItems.find(i => lower.includes(i.name.toLowerCase()));
+        return match ? match.cat : 'Other';
     }
 
-    function addCartItem(id, name) {
+    function buildViews() {
+        if (Object.keys(cart).length === 0) {
+            document.getElementById('empty-msg').style.display = 'block';
+            return;
+        }
+
+        document.getElementById('shop-controls').style.display = 'flex';
+        document.getElementById('clear-all-btn').style.display = 'inline-block';
+
+        // Group items by category
+        const groups = {};
+        Object.entries(cart).forEach(([id, name]) => {
+            const cat = getCategory(name);
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push({ id, name });
+        });
+
+        // Sort categories by saved order
+        let cats = Object.keys(groups).sort();
+        if (savedOrder.length) {
+            cats = cats.sort((a, b) => {
+                const ai = savedOrder.indexOf(a), bi = savedOrder.indexOf(b);
+                if (ai === -1 && bi === -1) return a.localeCompare(b);
+                if (ai === -1) return 1;
+                if (bi === -1) return -1;
+                return ai - bi;
+            });
+        }
+
+        const container = document.getElementById('category-container');
+        const flatList = document.getElementById('flat-list');
+
+        cats.forEach(cat => {
+            const catId = cat.replace(/ /g, '-');
+
+            // Category section
+            const section = document.createElement('div');
+            section.className = 'mb-3';
+            section.dataset.category = cat;
+
+            const header = document.createElement('div');
+            header.className = 'd-flex align-items-center gap-2 mb-1';
+            header.innerHTML = `
+                <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
+                        onclick="toggleCollapse('${catId}')">
+                    <span id="chevron-${catId}">▾</span> ${cat}
+                    <span class="badge bg-secondary ms-1">${groups[cat].length}</span>
+                </button>`;
+            section.appendChild(header);
+
+            const itemsDiv = document.createElement('div');
+            itemsDiv.id = 'items-' + catId;
+            itemsDiv.className = 'category-items';
+
+            const ul = document.createElement('ul');
+            ul.className = 'list-group mb-2';
+
+            groups[cat].forEach(({ id, name }) => {
+                ul.appendChild(makeItem(id, name));
+                flatList.appendChild(makeFlatItem(id, name));
+            });
+
+            itemsDiv.appendChild(ul);
+            section.appendChild(itemsDiv);
+            container.appendChild(section);
+
+            // Restore collapsed
+            if (catCollapsed[catId]) {
+                itemsDiv.classList.add('collapsed');
+                document.getElementById('chevron-' + catId).textContent = '▸';
+            }
+        });
+
+        applyViewMode();
+    }
+
+    function makeItem(id, name) {
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
         li.id = 'cart-' + id;
+        li.style.cursor = 'pointer';
         li.innerHTML = `<span class="fw-semibold">${name}</span>
             <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
+        li.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') li.classList.toggle('selected'); });
+        return li;
+    }
+
+    function makeFlatItem(id, name) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.id = 'flat-' + id;
         li.style.cursor = 'pointer';
-        li.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'BUTTON') this.classList.toggle('selected');
-        });
-        list.appendChild(li);
+        li.innerHTML = `<span class="fw-semibold">${name}</span>
+            <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
+        li.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') li.classList.toggle('selected'); });
+        return li;
+    }
+
+    function toggleCollapse(catId) {
+        const items = document.getElementById('items-' + catId);
+        const chevron = document.getElementById('chevron-' + catId);
+        const isCollapsed = items.classList.toggle('collapsed');
+        chevron.textContent = isCollapsed ? '▸' : '▾';
+        catCollapsed[catId] = isCollapsed;
+        localStorage.setItem('shopCatCollapsed', JSON.stringify(catCollapsed));
+    }
+
+    function applyViewMode() {
+        const container = document.getElementById('category-container');
+        const flatList = document.getElementById('flat-list');
+        const btn = document.getElementById('view-toggle-btn');
+        if (flatMode) {
+            container.style.display = 'none';
+            flatList.style.display = '';
+            btn.textContent = '🗂️ Category View';
+        } else {
+            container.style.display = '';
+            flatList.style.display = 'none';
+            btn.textContent = '📋 Flat View';
+        }
+    }
+
+    function toggleViewMode() {
+        flatMode = !flatMode;
+        localStorage.setItem('shopFlatMode', flatMode);
+        applyViewMode();
     }
 
     function removeItem(id) {
         const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
         delete cart[id];
         localStorage.setItem('groceryCart', JSON.stringify(cart));
-        const li = document.getElementById('cart-' + id);
-        if (li) li.remove();
-        if (list.children.length === 0) {
-            emptyMsg.style.display = 'block';
-            clearAllBtn.style.display = 'none';
+        ['cart-', 'flat-'].forEach(prefix => {
+            const el = document.getElementById(prefix + id);
+            if (el) el.remove();
+        });
+        const totalItems = document.querySelectorAll('#category-container li').length;
+        if (totalItems === 0) {
+            document.getElementById('empty-msg').style.display = 'block';
+            document.getElementById('shop-controls').style.display = 'none';
+            document.getElementById('clear-all-btn').style.display = 'none';
         }
     }
 
     function clearAll() {
         localStorage.removeItem('groceryCart');
-        list.innerHTML = '';
-        emptyMsg.style.display = 'block';
-        clearAllBtn.style.display = 'none';
+        document.getElementById('category-container').innerHTML = '';
+        document.getElementById('flat-list').innerHTML = '';
+        document.getElementById('empty-msg').style.display = 'block';
+        document.getElementById('shop-controls').style.display = 'none';
+        document.getElementById('clear-all-btn').style.display = 'none';
     }
+
+    buildViews();
 </script>
+

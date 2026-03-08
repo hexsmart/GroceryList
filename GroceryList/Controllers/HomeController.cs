@@ -36,6 +36,7 @@ public class HomeController : Controller
 
     public IActionResult Shop()
     {
+        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
         return View();
     }
 
