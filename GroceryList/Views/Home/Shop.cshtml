@@ -2,6 +2,13 @@
     ViewData["Title"] = "Shop";
 }
 
+<style>
+    .list-group-item.selected {
+        background-color: #dee2e6;
+        color: #6c757d;
+    }
+</style>
+
 <h1 class="mb-4">🧺 In My Cart</h1>
 
 <div id="empty-msg" class="text-muted" style="display:none">No items in your cart. Go select some from the <a href="/">Grocery List</a>!</div>
@@ -29,6 +36,10 @@
         li.id = 'cart-' + id;
         li.innerHTML = `<span class="fw-semibold">${name}</span>
             <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
+        li.style.cursor = 'pointer';
+        li.addEventListener('click', function(e) {
+            if (e.target.tagName !== 'BUTTON') this.classList.toggle('selected');
+        });
         list.appendChild(li);
     }
 
