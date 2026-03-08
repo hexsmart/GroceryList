@@ -4,6 +4,10 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 
 ← [Back to README](../README.md)
 
+## Contents
+- [2026-03-07](#2026-03-07)
+- [2026-03-08](#2026-03-08)
+
 ## 2026-03-07
 
 * 🆕 Created GitHub Repo
