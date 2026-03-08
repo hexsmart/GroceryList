@@ -20,6 +20,17 @@ public class HomeController : Controller
         return View(items);
     }
 
+    public IActionResult Store()
+    {
+        var existing = _groceryService.GetAll().Select(i => i.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var model = new StoreViewModel
+        {
+            StoreItems = GroceryList.Helpers.EmojiHelper.GetAllItems(),
+            ExistingItems = existing
+        };
+        return View(model);
+    }
+
     public IActionResult Shop()
     {
         return View();

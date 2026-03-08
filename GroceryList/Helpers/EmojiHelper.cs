@@ -49,4 +49,13 @@ public static class EmojiHelper
         }
         return "🛒";
     }
+
+    // Returns one display name per unique emoji group, capitalized and sorted
+    public static List<string> GetAllItems() =>
+        _map
+            .GroupBy(kvp => kvp.Value)
+            .Select(g => g.OrderBy(kvp => kvp.Key.Length).First().Key)
+            .Select(k => char.ToUpper(k[0]) + k.Substring(1))
+            .OrderBy(k => k)
+            .ToList();
 }
