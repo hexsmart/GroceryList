@@ -40,7 +40,7 @@ public class HomeController : Controller
         var item = items.FirstOrDefault(i => i.Id == id);
         if (item != null)
         {
-            item.Category = category ?? "Staple";
+            item.Category = category ?? string.Empty;
             _groceryService.Save(items);
         }
         return RedirectToAction(nameof(Index));
