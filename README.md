@@ -12,10 +12,10 @@ NEXA is adding to the prompts below after major milestones _(even minor ones)_
 
 ## 📋 TODO
 
-👉 [View the TODO list](README-TODO.md)
+🔍 [View the TODO list](README-TODO.md)
 
 ## 🤖 AI Prompts
 
 This project is being built entirely through AI prompts using NEXA/CoPilot.
 
-👉 [View the full AI Prompts history](README-AI-Prompts.md)
+🔍 [View the full AI Prompts history](README-AI-Prompts.md)
