@@ -8,22 +8,28 @@
 
 <ul class="list-group mb-3" id="cart-list"></ul>
 
+<button id="clear-all-btn" class="btn btn-warning" onclick="clearAll()" style="display:none">🗑️ Clear All</button>
+
 <script>
     const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
     const list = document.getElementById('cart-list');
     const emptyMsg = document.getElementById('empty-msg');
+    const clearAllBtn = document.getElementById('clear-all-btn');
 
     if (Object.keys(cart).length === 0) {
         emptyMsg.style.display = 'block';
     } else {
-        Object.entries(cart).forEach(([id, name]) => {
-            const li = document.createElement('li');
-            li.className = 'list-group-item d-flex justify-content-between align-items-center';
-            li.id = 'cart-' + id;
-            li.innerHTML = `<span class="fw-semibold">${name}</span>
-                <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">Remove</button>`;
-            list.appendChild(li);
-        });
+        Object.entries(cart).forEach(([id, name]) => addCartItem(id, name));
+        clearAllBtn.style.display = 'inline-block';
+    }
+
+    function addCartItem(id, name) {
+        const li = document.createElement('li');
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        li.id = 'cart-' + id;
+        li.innerHTML = `<span class="fw-semibold">${name}</span>
+            <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
+        list.appendChild(li);
     }
 
     function removeItem(id) {
@@ -34,6 +40,14 @@
         if (li) li.remove();
         if (list.children.length === 0) {
             emptyMsg.style.display = 'block';
+            clearAllBtn.style.display = 'none';
         }
+    }
+
+    function clearAll() {
+        localStorage.removeItem('groceryCart');
+        list.innerHTML = '';
+        emptyMsg.style.display = 'block';
+        clearAllBtn.style.display = 'none';
     }
 </script>
