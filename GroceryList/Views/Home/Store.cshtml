@@ -14,7 +14,13 @@
         .ToList();
 }
 
-<h1 class="mb-4">🏪 Store</h1>
+<h1 class="mb-3">🏪 Store</h1>
+
+<div class="mb-3">
+    <button class="btn btn-outline-secondary btn-sm" onclick="expandCollapseAll()">
+        <span id="expand-collapse-label">⬇️ Collapse All</span>
+    </button>
+</div>
 
 <div id="store-container">
     @foreach (var group in orderedGroups)
@@ -73,6 +79,10 @@
         }
     });
 
+    // Sync button label to current state
+    const anyExpanded = Array.from(document.querySelectorAll('.category-items')).some(el => !el.classList.contains('collapsed'));
+    document.getElementById('expand-collapse-label').textContent = anyExpanded ? '⬇️ Collapse All' : '➡️ Expand All';
+
     // Drag-to-reorder
     Sortable.create(document.getElementById('store-container'), {
         handle: '.drag-handle',
@@ -87,6 +97,25 @@
             });
         }
     });
+
+    function expandCollapseAll() {
+        const allCollapsed = Array.from(document.querySelectorAll('.category-items')).every(el => el.classList.contains('collapsed'));
+        document.querySelectorAll('.category-items').forEach(el => {
+            const catId = el.id.replace('items-', '');
+            const chevron = document.getElementById('chevron-' + catId);
+            if (allCollapsed) {
+                el.classList.remove('collapsed');
+                if (chevron) chevron.textContent = '▾';
+                storeCatCollapsed[catId] = false;
+            } else {
+                el.classList.add('collapsed');
+                if (chevron) chevron.textContent = '▸';
+                storeCatCollapsed[catId] = true;
+            }
+        });
+        localStorage.setItem('storeCatCollapsed', JSON.stringify(storeCatCollapsed));
+        document.getElementById('expand-collapse-label').textContent = allCollapsed ? '⬇️ Collapse All' : '➡️ Expand All';
+    }
 
     function toggleCollapse(catId) {
         const items = document.getElementById('items-' + catId);
