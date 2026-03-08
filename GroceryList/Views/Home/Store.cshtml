@@ -2,32 +2,73 @@
 @using GroceryList.Helpers
 @{
     ViewData["Title"] = "Store";
-    var grouped = Model.StoreItems.GroupBy(i => i.Category).OrderBy(g => g.Key);
+    var grouped = Model.StoreItems.GroupBy(i => i.Category).OrderBy(g => g.Key).ToList();
 }
 
 <h1 class="mb-4">🏪 Store</h1>
 
-@foreach (var group in grouped)
-{
-    <h5 class="mt-4 mb-2 text-secondary">@group.Key</h5>
-    <ul class="list-group mb-2">
-        @foreach (var item in group)
-        {
-            var already = Model.ExistingItems.Contains(item.Name);
-            <li class="list-group-item d-flex justify-content-between align-items-center">
-                <span class="fw-semibold">@item.Emoji @item.Name</span>
-                @if (already)
-                {
-                    <span class="badge bg-success">✅ Added</span>
-                }
-                else
-                {
-                    <form asp-action="Add" method="post" class="mb-0">
-                        <input type="hidden" name="items" value="@item.Name" />
-                        <button class="btn btn-sm btn-primary" type="submit">➕ Add</button>
-                    </form>
-                }
-            </li>
+<div id="store-container">
+    @foreach (var group in grouped)
+    {
+        var catId = group.Key.Replace(" ", "-");
+        <div class="mb-3">
+            <div class="d-flex align-items-center gap-2 mb-1">
+                <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
+                        onclick="toggleCollapse('@catId')">
+                    <span id="chevron-@catId">▾</span> @group.Key
+                    <span class="badge bg-secondary ms-1">@group.Count()</span>
+                </button>
+            </div>
+            <div id="items-@catId" class="category-items">
+                <ul class="list-group mb-2">
+                    @foreach (var item in group)
+                    {
+                        var already = Model.ExistingItems.Contains(item.Name);
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <span class="fw-semibold">@item.Emoji @item.Name</span>
+                            @if (already)
+                            {
+                                <span class="badge bg-success">✅ Added</span>
+                            }
+                            else
+                            {
+                                <form asp-action="Add" method="post" class="mb-0">
+                                    <input type="hidden" name="items" value="@item.Name" />
+                                    <button class="btn btn-sm btn-primary" type="submit">➕ Add</button>
+                                </form>
+                            }
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    }
+</div>
+
+<style>
+    .category-items.collapsed { display: none; }
+</style>
+
+<script>
+    const storeCatCollapsed = JSON.parse(localStorage.getItem('storeCatCollapsed') || '{}');
+
+    // Restore collapsed state
+    document.querySelectorAll('[id^="items-"]').forEach(el => {
+        const catId = el.id.replace('items-', '');
+        if (storeCatCollapsed[catId]) {
+            el.classList.add('collapsed');
+            const chevron = document.getElementById('chevron-' + catId);
+            if (chevron) chevron.textContent = '▸';
         }
-    </ul>
-}
+    });
+
+    function toggleCollapse(catId) {
+        const items = document.getElementById('items-' + catId);
+        const chevron = document.getElementById('chevron-' + catId);
+        const isCollapsed = items.classList.toggle('collapsed');
+        chevron.textContent = isCollapsed ? '▸' : '▾';
+        storeCatCollapsed[catId] = isCollapsed;
+        localStorage.setItem('storeCatCollapsed', JSON.stringify(storeCatCollapsed));
+    }
+</script>
+
