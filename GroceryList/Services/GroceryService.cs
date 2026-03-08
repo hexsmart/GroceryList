@@ -28,9 +28,17 @@ public class GroceryService
     public void AddItems(string commaSeparated)
     {
         var items = GetAll();
+        var existing = items.Select(i => i.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var names = commaSeparated.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         foreach (var name in names)
-            items.Add(new GroceryItem { Name = Capitalize(name) });
+        {
+            var capitalized = Capitalize(name);
+            if (!existing.Contains(capitalized))
+            {
+                items.Add(new GroceryItem { Name = capitalized });
+                existing.Add(capitalized);
+            }
+        }
         Save(items);
     }
 
