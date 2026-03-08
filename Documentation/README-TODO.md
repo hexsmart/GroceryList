@@ -20,3 +20,9 @@
   * [ ] Add a store switcher to the nav or home page
   * [ ] Store definitions saved per user
   * [ ] Pre-seed example stores as starting templates
+- [ ] [Color-code grocery list items by category (Staple vs Other)](https://github.com/hexsmart/GroceryList/issues/8)
+  * [ ] Assign a distinct background color to Staple items
+  * [ ] Assign a distinct background color to Other items
+  * [ ] Allow the user to customize the colors per category
+  * [ ] Colors saved per user in settings
+  * [ ] Apply in both flat and category views
