@@ -4,26 +4,30 @@ namespace GroceryList.Services;
 
 public class SettingsService
 {
-    private readonly string _filePath;
+    private readonly string _contentRoot;
 
     public SettingsService(IWebHostEnvironment env)
     {
-        _filePath = Path.Combine(env.ContentRootPath, "settings.json");
+        _contentRoot = env.ContentRootPath;
     }
 
-    public List<string> GetCategoryOrder()
+    private string FilePath(string userId) =>
+        Path.Combine(_contentRoot, $"settings-{userId}.json");
+
+    public List<string> GetCategoryOrder(string userId)
     {
-        if (!File.Exists(_filePath)) return new List<string>();
-        var json = File.ReadAllText(_filePath);
+        var path = FilePath(userId);
+        if (!File.Exists(path)) return new List<string>();
+        var json = File.ReadAllText(path);
         var settings = JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(json);
         if (settings != null && settings.TryGetValue("categoryOrder", out var val))
             return val.Deserialize<List<string>>() ?? new List<string>();
         return new List<string>();
     }
 
-    public void SaveCategoryOrder(List<string> order)
+    public void SaveCategoryOrder(string userId, List<string> order)
     {
         var settings = new Dictionary<string, object> { ["categoryOrder"] = order };
-        File.WriteAllText(_filePath, JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(FilePath(userId), JsonSerializer.Serialize(settings, new JsonSerializerOptions { WriteIndented = true }));
     }
 }

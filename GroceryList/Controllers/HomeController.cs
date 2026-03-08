@@ -29,7 +29,7 @@ public class HomeController : Controller
         var redirect = RequireLogin();
         if (redirect != null) return redirect;
         var items = _groceryService.GetAll(UserId!);
-        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
+        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder(UserId!);
         return View(items);
     }
 
@@ -43,7 +43,7 @@ public class HomeController : Controller
             StoreItems = GroceryList.Helpers.EmojiHelper.GetAllItems(),
             ExistingItems = existing
         };
-        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
+        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder(UserId!);
         return View(model);
     }
 
@@ -51,14 +51,16 @@ public class HomeController : Controller
     {
         var redirect = RequireLogin();
         if (redirect != null) return redirect;
-        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
+        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder(UserId!);
         return View();
     }
 
     [HttpPost]
     public IActionResult SaveCategoryOrder([FromBody] List<string> order)
     {
-        _settingsService.SaveCategoryOrder(order);
+        var redirect = RequireLogin();
+        if (redirect != null) return Unauthorized();
+        _settingsService.SaveCategoryOrder(UserId!, order);
         return Ok();
     }
 

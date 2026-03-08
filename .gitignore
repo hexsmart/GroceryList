@@ -487,4 +487,5 @@ $RECYCLE.BIN/
 groceries.json
 groceries-*.json
 settings.json
+settings-*.json
 users.json
