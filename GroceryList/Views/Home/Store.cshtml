@@ -2,27 +2,32 @@
 @using GroceryList.Helpers
 @{
     ViewData["Title"] = "Store";
+    var grouped = Model.StoreItems.GroupBy(i => i.Category).OrderBy(g => g.Key);
 }
 
 <h1 class="mb-4">🏪 Store</h1>
 
-<ul class="list-group mb-3">
-    @foreach (var item in Model.StoreItems)
-    {
-        var already = Model.ExistingItems.Contains(item);
-        <li class="list-group-item d-flex justify-content-between align-items-center">
-            <span class="fw-semibold">@EmojiHelper.GetEmoji(item) @item</span>
-            @if (already)
-            {
-                <span class="badge bg-success">✅ Added</span>
-            }
-            else
-            {
-                <form asp-action="Add" method="post" class="mb-0">
-                    <input type="hidden" name="items" value="@item" />
-                    <button class="btn btn-sm btn-primary" type="submit">➕ Add</button>
-                </form>
-            }
-        </li>
-    }
-</ul>
+@foreach (var group in grouped)
+{
+    <h5 class="mt-4 mb-2 text-secondary">@group.Key</h5>
+    <ul class="list-group mb-2">
+        @foreach (var item in group)
+        {
+            var already = Model.ExistingItems.Contains(item.Name);
+            <li class="list-group-item d-flex justify-content-between align-items-center">
+                <span class="fw-semibold">@item.Emoji @item.Name</span>
+                @if (already)
+                {
+                    <span class="badge bg-success">✅ Added</span>
+                }
+                else
+                {
+                    <form asp-action="Add" method="post" class="mb-0">
+                        <input type="hidden" name="items" value="@item.Name" />
+                        <button class="btn btn-sm btn-primary" type="submit">➕ Add</button>
+                    </form>
+                }
+            </li>
+        }
+    </ul>
+}
