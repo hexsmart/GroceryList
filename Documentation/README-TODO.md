@@ -26,3 +26,8 @@
   * [ ] Allow the user to customize the colors per category
   * [ ] Colors saved per user in settings
   * [ ] Apply in both flat and category views
+- [ ] [Add an About page with credits and backstory](https://github.com/hexsmart/GroceryList/issues/9)
+  * [ ] Backstory — why this app was built (AI-assisted dev exercise with GitHub Copilot)
+  * [ ] Credits (developer, tools used)
+  * [ ] Link to the GitHub repo
+  * [ ] Add About link to the navbar
