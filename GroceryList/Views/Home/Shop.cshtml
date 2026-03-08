@@ -152,7 +152,6 @@
 
             groups[cat].forEach(({ id, name }) => {
                 ul.appendChild(makeItem(id, name));
-                flatList.appendChild(makeFlatItem(id, name));
             });
 
             itemsDiv.appendChild(ul);
@@ -165,6 +164,11 @@
                 document.getElementById('chevron-' + catId).textContent = '▸';
             }
         });
+
+        // Build flat list alphabetically
+        const allItems = Object.entries(cart).map(([id, name]) => ({ id, name }));
+        allItems.sort((a, b) => a.name.localeCompare(b.name));
+        allItems.forEach(({ id, name }) => flatList.appendChild(makeFlatItem(id, name)));
 
         applyViewMode();
 
