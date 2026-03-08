@@ -189,15 +189,25 @@
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
         li.id = 'cart-' + id;
         li.style.cursor = 'pointer';
-        li.innerHTML = `<span class="fw-semibold">${name}</span>
+        li.innerHTML = `
+            <div class="d-flex align-items-center gap-2">
+                <input type="checkbox" class="form-check-input mt-0 row-checkbox" onclick="event.stopPropagation(); toggleItem(this.closest('li'))">
+                <span class="fw-semibold">${name}</span>
+            </div>
             <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
         li.addEventListener('click', e => {
-            if (e.target.tagName !== 'BUTTON') {
-                li.classList.toggle('selected');
-                updateCategoryCount(li);
+            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+                toggleItem(li);
             }
         });
         return li;
+    }
+
+    function toggleItem(li) {
+        const isSelected = li.classList.toggle('selected');
+        const cb = li.querySelector('.row-checkbox');
+        if (cb) cb.checked = isSelected;
+        updateCategoryCount(li);
     }
 
     function updateCategoryCount(li) {
@@ -216,9 +226,15 @@
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
         li.id = 'flat-' + id;
         li.style.cursor = 'pointer';
-        li.innerHTML = `<span class="fw-semibold">${name}</span>
+        li.innerHTML = `
+            <div class="d-flex align-items-center gap-2">
+                <input type="checkbox" class="form-check-input mt-0 row-checkbox" onclick="event.stopPropagation(); toggleItem(this.closest('li'))">
+                <span class="fw-semibold">${name}</span>
+            </div>
             <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
-        li.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') li.classList.toggle('selected'); });
+        li.addEventListener('click', e => {
+            if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') toggleItem(li);
+        });
         return li;
     }
 
