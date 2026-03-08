@@ -37,7 +37,7 @@
                         <input type="text" name="category" value="@item.Category" class="form-control form-control-sm" style="width:140px" placeholder="Category" onclick="event.stopPropagation()" />
                         <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
                     </form>
-                    <form asp-action="Remove" method="post" class="mb-0">
+                    <form asp-action="Remove" method="post" class="mb-0" onsubmit="removeFromCart('@item.Id')">
                         <input type="hidden" name="id" value="@item.Id" />
                         <button class="btn btn-sm btn-danger" type="submit" onclick="event.stopPropagation()">🗑️</button>
                     </form>
@@ -85,6 +85,12 @@ else
         }
         localStorage.setItem('groceryCart', JSON.stringify(cart));
     }
+    function removeFromCart(id) {
+        const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
+        delete cart[id];
+        localStorage.setItem('groceryCart', JSON.stringify(cart));
+    }
+
     function selectStaples() {
         document.querySelectorAll('.grocery-row').forEach(row => {
             if (row.dataset.category.toLowerCase() === 'staple' && !row.classList.contains('selected')) {
