@@ -2,17 +2,27 @@
 @using GroceryList.Helpers
 @{
     ViewData["Title"] = "Store";
-    var grouped = Model.StoreItems.GroupBy(i => i.Category).OrderBy(g => g.Key).ToList();
+    var categoryOrder = ViewBag.CategoryOrder as List<string> ?? new List<string>();
+    var categoryOrderJson = System.Text.Json.JsonSerializer.Serialize(categoryOrder);
+    var grouped = Model.StoreItems.GroupBy(i => i.Category).ToList();
+    var orderedGroups = grouped
+        .OrderBy(g => {
+            var idx = categoryOrder.IndexOf(g.Key);
+            return idx == -1 ? int.MaxValue : idx;
+        })
+        .ThenBy(g => g.Key)
+        .ToList();
 }
 
 <h1 class="mb-4">🏪 Store</h1>
 
 <div id="store-container">
-    @foreach (var group in grouped)
+    @foreach (var group in orderedGroups)
     {
         var catId = group.Key.Replace(" ", "-");
-        <div class="mb-3">
+        <div class="mb-3" data-category="@group.Key">
             <div class="d-flex align-items-center gap-2 mb-1">
+                <span class="drag-handle text-muted me-1" style="cursor:grab" title="Drag to reorder">⠿</span>
                 <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
                         onclick="toggleCollapse('@catId')">
                     <span id="chevron-@catId">▾</span> @group.Key
@@ -45,8 +55,11 @@
 
 <style>
     .category-items.collapsed { display: none; }
+    #store-container > div { border-left: 3px solid transparent; }
+    #store-container > div.sortable-ghost { opacity: 0.4; }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
 <script>
     const storeCatCollapsed = JSON.parse(localStorage.getItem('storeCatCollapsed') || '{}');
 
@@ -57,6 +70,21 @@
             el.classList.add('collapsed');
             const chevron = document.getElementById('chevron-' + catId);
             if (chevron) chevron.textContent = '▸';
+        }
+    });
+
+    // Drag-to-reorder
+    Sortable.create(document.getElementById('store-container'), {
+        handle: '.drag-handle',
+        animation: 150,
+        onEnd: function () {
+            const order = Array.from(document.querySelectorAll('#store-container > [data-category]'))
+                .map(el => el.dataset.category);
+            fetch('/Home/SaveCategoryOrder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(order)
+            });
         }
     });
 

@@ -135,6 +135,7 @@
             const header = document.createElement('div');
             header.className = 'd-flex align-items-center gap-2 mb-1';
             header.innerHTML = `
+                <span class="drag-handle text-muted me-1" style="cursor:grab" title="Drag to reorder">⠿</span>
                 <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
                         onclick="toggleCollapse('${catId}')">
                     <span id="chevron-${catId}">▾</span> ${cat}
@@ -166,6 +167,21 @@
         });
 
         applyViewMode();
+
+        // Drag-to-reorder categories
+        Sortable.create(document.getElementById('category-container'), {
+            handle: '.drag-handle',
+            animation: 150,
+            onEnd: function () {
+                const order = Array.from(document.querySelectorAll('#category-container > [data-category]'))
+                    .map(el => el.dataset.category);
+                fetch('/Home/SaveCategoryOrder', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(order)
+                });
+            }
+        });
     }
 
     function makeItem(id, name) {

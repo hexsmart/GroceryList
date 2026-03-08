@@ -43,6 +43,7 @@ public class HomeController : Controller
             StoreItems = GroceryList.Helpers.EmojiHelper.GetAllItems(),
             ExistingItems = existing
         };
+        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
         return View(model);
     }
 
