@@ -139,7 +139,7 @@
                 <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
                         onclick="toggleCollapse('${catId}')">
                     <span id="chevron-${catId}">▾</span> ${cat}
-                    <span class="badge bg-secondary ms-1">${groups[cat].length}</span>
+                    <span class="badge bg-secondary ms-1" id="count-${catId}">${groups[cat].length}</span>
                 </button>`;
             section.appendChild(header);
 
@@ -191,8 +191,24 @@
         li.style.cursor = 'pointer';
         li.innerHTML = `<span class="fw-semibold">${name}</span>
             <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
-        li.addEventListener('click', e => { if (e.target.tagName !== 'BUTTON') li.classList.toggle('selected'); });
+        li.addEventListener('click', e => {
+            if (e.target.tagName !== 'BUTTON') {
+                li.classList.toggle('selected');
+                updateCategoryCount(li);
+            }
+        });
         return li;
+    }
+
+    function updateCategoryCount(li) {
+        const section = li.closest('[data-category]');
+        if (!section) return;
+        const catId = section.dataset.category.replace(/ /g, '-');
+        const badge = document.getElementById('count-' + catId);
+        if (!badge) return;
+        const total = section.querySelectorAll('#items-' + catId + ' li').length;
+        const selected = section.querySelectorAll('#items-' + catId + ' li.selected').length;
+        badge.textContent = total - selected;
     }
 
     function makeFlatItem(id, name) {
