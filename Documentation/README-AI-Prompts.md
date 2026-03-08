@@ -65,4 +65,30 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * `GroceryItemTests` — default GUID, category, and name
   * Each test class in its own file
 * 📁 Moved documentation files into `Documentation/` folder
+* 🗂️ Category view on Home page (Issue #1)
+  * Collapsible sections with SortableJS drag-to-reorder
+  * Category order persisted to `settings-{userId}.json` (per user)
+  * Flat/Category view toggle
+  * ✖ Clear Selection button
+* 👤 User login & registration (Issue #2)
+  * Login and Register pages
+  * Per-user grocery list files (`groceries-{userId}.json`)
+  * Session-based auth (30-day idle timeout)
+  * Navbar shows user first name + Sign Out
+* 🗂️ Category view added to Shop and Store pages
+  * Collapsible sections, drag-to-reorder, saves to same settings file
+* 📌 Sticky navbar (`fixed-top`) so menu stays visible while scrolling
+* 🏪 Store page improvements
+  * AJAX add — stays on Store page, button becomes ✅ Added
+  * 🔽 Collapse All / 🔼 Expand All button
+* 💸 Shop nav item uses money-flying emoji
+* 🧺 Shop page improvements
+  * Checkboxes on items (like Home page)
+  * Category badge shows total; switches to selected/total when items checked
+  * Badge updates live on toggle
+  * Ampersand fix for category IDs (Bread & Grains, Condiments & Pantry)
+  * Selection preserved when switching between flat and category view
+  * Category badges refresh when switching from flat to category view
+  * Flat list always alphabetized
+* 🔄 Home page button order: Add Staples → Flat View → Clear Selection
 
