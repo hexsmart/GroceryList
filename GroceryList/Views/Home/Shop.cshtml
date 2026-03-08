@@ -30,15 +30,25 @@
         clearAllBtn.style.display = 'inline-block';
     }
 
+    const selected = JSON.parse(localStorage.getItem('shopSelected') || '[]');
+
     function addCartItem(id, name) {
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
         li.id = 'cart-' + id;
+        if (selected.includes(id)) li.classList.add('selected');
         li.innerHTML = `<span class="fw-semibold">${name}</span>
             <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
         li.style.cursor = 'pointer';
         li.addEventListener('click', function(e) {
-            if (e.target.tagName !== 'BUTTON') this.classList.toggle('selected');
+            if (e.target.tagName !== 'BUTTON') {
+                this.classList.toggle('selected');
+                const sel = JSON.parse(localStorage.getItem('shopSelected') || '[]');
+                const idx = sel.indexOf(id);
+                if (this.classList.contains('selected')) { if (idx === -1) sel.push(id); }
+                else { if (idx > -1) sel.splice(idx, 1); }
+                localStorage.setItem('shopSelected', JSON.stringify(sel));
+            }
         });
         list.appendChild(li);
     }
@@ -47,6 +57,9 @@
         const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
         delete cart[id];
         localStorage.setItem('groceryCart', JSON.stringify(cart));
+        const sel = JSON.parse(localStorage.getItem('shopSelected') || '[]');
+        const idx = sel.indexOf(id);
+        if (idx > -1) { sel.splice(idx, 1); localStorage.setItem('shopSelected', JSON.stringify(sel)); }
         const li = document.getElementById('cart-' + id);
         if (li) li.remove();
         if (list.children.length === 0) {
@@ -57,6 +70,7 @@
 
     function clearAll() {
         localStorage.removeItem('groceryCart');
+        localStorage.removeItem('shopSelected');
         list.innerHTML = '';
         emptyMsg.style.display = 'block';
         clearAllBtn.style.display = 'none';
