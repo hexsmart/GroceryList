@@ -208,6 +208,17 @@
         const cb = li.querySelector('.row-checkbox');
         if (cb) cb.checked = isSelected;
         updateCategoryCount(li);
+
+        // Sync counterpart in the other view
+        const otherId = li.id.startsWith('cart-')
+            ? 'flat-' + li.id.slice(5)
+            : 'cart-' + li.id.slice(5);
+        const other = document.getElementById(otherId);
+        if (other) {
+            other.classList.toggle('selected', isSelected);
+            const otherCb = other.querySelector('.row-checkbox');
+            if (otherCb) otherCb.checked = isSelected;
+        }
     }
 
     function updateCategoryCount(li) {
