@@ -1,6 +1,6 @@
 # 🤖 AI Prompts
 
-This document tracks all AI-assisted changes made to the Grocery List app using NEXA/CoPilot.
+This document tracks all AI-assisted changes made to the Grocery List app using NEXA/CoPilot.  _(The text may or may not be what was said exactly - just the general gist of the ask.)_
 
 ← [Back to README](../README.md)
 

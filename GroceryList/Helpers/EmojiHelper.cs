@@ -48,7 +48,8 @@ public static class EmojiHelper
         new("Frozen Foods", "🧊", "Frozen"),
         new("Pizza", "🍕", "Frozen"),
         // Household
-        new("Detergent", "🫧", "Household"),
+        new("Dish Soap", "🫧", "Household"),
+        new("Dishwasher Soap", "🫧", "Household"),
         new("Paper Towels", "🧻", "Household"),
         new("Shampoo", "🧴", "Household"),
         new("Soap", "🧼", "Household"),
@@ -62,6 +63,7 @@ public static class EmojiHelper
         new("Crab", "🦀", "Meat & Seafood"),
         new("Fish", "🐟", "Meat & Seafood"),
         new("Ham", "🍖", "Meat & Seafood"),
+        new("Ham - Lunchmeat", "🍖", "Meat & Seafood"),
         new("Lobster", "🦞", "Meat & Seafood"),
         new("Pork", "🥩", "Meat & Seafood"),
         new("Salmon", "🐟", "Meat & Seafood"),
@@ -69,6 +71,7 @@ public static class EmojiHelper
         new("Shrimp", "🍤", "Meat & Seafood"),
         new("Steak", "🥩", "Meat & Seafood"),
         new("Turkey", "🦃", "Meat & Seafood"),
+        new("Turkey - Lunchmeat", "🦃", "Meat & Seafood"),
         // Produce
         new("Apple", "🍎", "Produce"),
         new("Avocado", "🥑", "Produce"),
@@ -93,6 +96,7 @@ public static class EmojiHelper
         new("Peppers", "🫑", "Produce"),
         new("Pineapple", "🍍", "Produce"),
         new("Potato", "🥔", "Produce"),
+        new("Salad", "🥬", "Produce"),
         new("Spinach", "🥬", "Produce"),
         new("Strawberries", "🍓", "Produce"),
         new("Tomato", "🍅", "Produce"),
