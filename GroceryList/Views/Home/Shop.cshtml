@@ -125,7 +125,7 @@
         const flatList = document.getElementById('flat-list');
 
         cats.forEach(cat => {
-            const catId = cat.replace(/ /g, '-');
+            const catId = cat.replace(/ /g, '-').replace(/&/g, 'and');
 
             // Category section
             const section = document.createElement('div');
@@ -203,7 +203,7 @@
     function updateCategoryCount(li) {
         const section = li.closest('[data-category]');
         if (!section) return;
-        const catId = section.dataset.category.replace(/ /g, '-');
+        const catId = section.dataset.category.replace(/ /g, '-').replace(/&/g, 'and');
         const badge = document.getElementById('count-' + catId);
         if (!badge) return;
         const total = section.querySelectorAll('#items-' + catId + ' li').length;
