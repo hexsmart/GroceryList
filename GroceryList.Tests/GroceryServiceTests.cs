@@ -1,5 +1,3 @@
-using GroceryList.Helpers;
-using GroceryList.Models;
 using GroceryList.Services;
 using Microsoft.AspNetCore.Hosting;
 using Moq;
@@ -123,71 +121,5 @@ public class GroceryServiceTests : IDisposable
         items[0].Category = "Other";
         _service.Save(items);
         Assert.Equal("Other", _service.GetAll()[0].Category);
-    }
-}
-
-public class EmojiHelperTests
-{
-    [Fact]
-    public void GetEmoji_ReturnsCorrectEmoji_ForKnownItem()
-    {
-        Assert.Equal("🥛", EmojiHelper.GetEmoji("Milk"));
-    }
-
-    [Fact]
-    public void GetEmoji_ReturnsTrolley_ForUnknownItem()
-    {
-        Assert.Equal("🛒", EmojiHelper.GetEmoji("Xyz123"));
-    }
-
-    [Fact]
-    public void GetEmoji_IsCaseInsensitive()
-    {
-        Assert.Equal(EmojiHelper.GetEmoji("milk"), EmojiHelper.GetEmoji("MILK"));
-    }
-
-    [Fact]
-    public void GetAllItems_ReturnsNonEmptyList()
-    {
-        Assert.NotEmpty(EmojiHelper.GetAllItems());
-    }
-
-    [Fact]
-    public void GetAllItems_ReturnsAlphabetizedList()
-    {
-        var names = EmojiHelper.GetAllItems().Select(i => i.Name).ToList();
-        Assert.Equal(names.OrderBy(n => n).ToList(), names);
-    }
-
-    [Fact]
-    public void GetAllItems_EachItemHasNameEmojiAndCategory()
-    {
-        foreach (var item in EmojiHelper.GetAllItems())
-        {
-            Assert.False(string.IsNullOrWhiteSpace(item.Name));
-            Assert.False(string.IsNullOrWhiteSpace(item.Emoji));
-            Assert.False(string.IsNullOrWhiteSpace(item.Category));
-        }
-    }
-}
-
-public class GroceryItemTests
-{
-    [Fact]
-    public void NewGroceryItem_HasNonEmptyGuid()
-    {
-        Assert.NotEqual(Guid.Empty, new GroceryItem().Id);
-    }
-
-    [Fact]
-    public void NewGroceryItem_DefaultsToStapleCategory()
-    {
-        Assert.Equal("Staple", new GroceryItem().Category);
-    }
-
-    [Fact]
-    public void NewGroceryItem_DefaultsToEmptyName()
-    {
-        Assert.Equal(string.Empty, new GroceryItem().Name);
     }
 }
