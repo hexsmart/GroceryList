@@ -28,14 +28,12 @@
                             <span class="fw-semibold">@item.Emoji @item.Name</span>
                             @if (already)
                             {
-                                <span class="badge bg-success">✅ Added</span>
+                                <span class="badge bg-success" id="badge-@item.Name.Replace(" ", "-")">✅ Added</span>
                             }
                             else
                             {
-                                <form asp-action="Add" method="post" class="mb-0">
-                                    <input type="hidden" name="items" value="@item.Name" />
-                                    <button class="btn btn-sm btn-primary" type="submit">➕ Add</button>
-                                </form>
+                                <button class="btn btn-sm btn-primary" id="badge-@item.Name.Replace(" ", "-")"
+                                        onclick="addItem(this, '@item.Name')">➕ Add</button>
                             }
                         </li>
                     }
@@ -69,6 +67,21 @@
         chevron.textContent = isCollapsed ? '▸' : '▾';
         storeCatCollapsed[catId] = isCollapsed;
         localStorage.setItem('storeCatCollapsed', JSON.stringify(storeCatCollapsed));
+    }
+
+    function addItem(btn, name) {
+        btn.disabled = true;
+        fetch('/Home/AddItem', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(name)
+        }).then(r => {
+            if (r.ok) {
+                btn.outerHTML = `<span class="badge bg-success">✅ Added</span>`;
+            } else {
+                btn.disabled = false;
+            }
+        });
     }
 </script>
 

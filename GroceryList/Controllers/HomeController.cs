@@ -62,6 +62,16 @@ public class HomeController : Controller
     }
 
     [HttpPost]
+    public IActionResult AddItem([FromBody] string item)
+    {
+        var redirect = RequireLogin();
+        if (redirect != null) return Unauthorized();
+        if (!string.IsNullOrWhiteSpace(item))
+            _groceryService.AddItems(UserId!, item);
+        return Ok();
+    }
+
+    [HttpPost]
     public IActionResult Add(string items)
     {
         var redirect = RequireLogin();
