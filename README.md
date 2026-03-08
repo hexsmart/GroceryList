@@ -10,6 +10,10 @@ NOTE: That **CoPilot** will add its name to the changesets.
 
 NEXA is adding to the prompts below after major milestones _(even minor ones)_
 
+## 📅 Activity Log
+
+🔍 [View the Activity Log](README-ActivityLog.md)
+
 ## 📋 TODO
 
 🔍 [View the TODO list](README-TODO.md)
