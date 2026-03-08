@@ -4,6 +4,8 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 
 ← [Back to README](../README.md)
 
+## 2026-03-07
+
 * 🆕 Created GitHub Repo
   * It needed an access token because `gh auth` didn't work.
 * 🏗️ Created ASP.NET Core MVC Project
@@ -28,7 +30,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Shop view shows cart with per-item Remove button
   * Removing from cart deselects the row on the Grocery List
 * 🗑️ Removed "Clear All" button (too dangerous!)
-* �� Auto-capitalize first letter of item names on add
+* 🔠 Auto-capitalize first letter of item names on add
 * 🛒 Renamed nav item to "Grocery List" with cart emoji
 * ☁️ Published to Azure App Service
   * Required quota increase to create App Service
@@ -46,3 +48,17 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 * 🛒 Deleting an item from Home also removes it from the Shop cart
 * ✂️ Removed strikethrough on selected Home list items
 * 🩶 Shop list rows turn grey when tapped (toggle on/off)
+
+## 2026-03-08
+
+* 📄 Split AI Prompts into separate `Documentation/README-AI-Prompts.md`; linked from README
+* 📋 Created `Documentation/README-TODO.md` with GitHub issues linked
+* 📅 Created `Documentation/README-ActivityLog.md`
+* 🔍 Replaced hand emojis with magnifying glass emojis in README links
+* 🧪 Added `GroceryList.Tests` xUnit project with 21 tests
+  * `GroceryServiceTests` — add, capitalize, deduplicate, alphabetize, remove, clear, persist
+  * `EmojiHelperTests` — known emoji, unknown fallback, case-insensitive, alphabetized
+  * `GroceryItemTests` — default GUID, category, and name
+  * Each test class in its own file
+* 📁 Moved documentation files into `Documentation/` folder
+
