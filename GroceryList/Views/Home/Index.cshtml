@@ -33,10 +33,6 @@
                         <span id="chevron-@catId">▾</span> @group.Key
                         <span class="badge bg-secondary ms-1">@group.Count()</span>
                     </button>
-                    <button type="button" class="btn btn-sm btn-outline-secondary ms-1" title="Toggle category visibility"
-                            onclick="toggleVisibility('@catId')">
-                        <span id="eye-@catId">👁️</span>
-                    </button>
                 </div>
                 <div id="items-@catId" class="category-items">
                     <ul class="list-group mb-2">
@@ -116,12 +112,6 @@
     .category-items.collapsed {
         display: none;
     }
-    .category-section.hidden > *:not(:first-child) {
-        display: none;
-    }
-    .category-section.hidden .btn-link {
-        opacity: 0.4;
-    }
     .drag-handle:active {
         cursor: grabbing;
     }
@@ -131,7 +121,6 @@
 <script>
     const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
     const catCollapsed = JSON.parse(localStorage.getItem('catCollapsed') || '{}');
-    const catHidden = JSON.parse(localStorage.getItem('catHidden') || '{}');
     const catOrder = JSON.parse(localStorage.getItem('catOrder') || '[]');
     let flatMode = localStorage.getItem('flatMode') === 'true';
 
@@ -173,10 +162,6 @@
             document.getElementById('items-' + catId).classList.add('collapsed');
             document.getElementById('chevron-' + catId).textContent = '▸';
         }
-        if (catHidden[catId]) {
-            section.classList.add('hidden');
-            document.getElementById('eye-' + catId).textContent = '🚫';
-        }
     });
 
     // Restore category order
@@ -205,15 +190,6 @@
         chevron.textContent = isCollapsed ? '▸' : '▾';
         catCollapsed[catId] = isCollapsed;
         localStorage.setItem('catCollapsed', JSON.stringify(catCollapsed));
-    }
-
-    function toggleVisibility(catId) {
-        const section = document.querySelector(`.category-section[data-category="${catId.replace(/-/g, ' ')}"]`);
-        const eye = document.getElementById('eye-' + catId);
-        const isHidden = section.classList.toggle('hidden');
-        eye.textContent = isHidden ? '🚫' : '👁️';
-        catHidden[catId] = isHidden;
-        localStorage.setItem('catHidden', JSON.stringify(catHidden));
     }
 
     function toggleRow(row) {
