@@ -15,6 +15,9 @@
 
 @if (Model.Any())
 {
+    <div class="mb-3">
+        <button class="btn btn-success" onclick="selectStaples()">⭐ Add Staples</button>
+    </div>
     <ul class="list-group mb-4">
         @foreach (var item in Model)
         {
@@ -22,6 +25,7 @@
                 style="cursor:pointer"
                 data-id="@item.Id"
                 data-name="@EmojiHelper.GetEmoji(item.Name) @item.Name"
+                data-category="@item.Category"
                 onclick="toggleRow(this)">
                 <div class="d-flex align-items-center gap-2">
                     <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
@@ -80,6 +84,13 @@ else
             delete cart[id];
         }
         localStorage.setItem('groceryCart', JSON.stringify(cart));
+    }
+    function selectStaples() {
+        document.querySelectorAll('.grocery-row').forEach(row => {
+            if (row.dataset.category.toLowerCase() === 'staple' && !row.classList.contains('selected')) {
+                toggleRow(row);
+            }
+        });
     }
 </script>
 
