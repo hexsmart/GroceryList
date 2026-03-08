@@ -1,6 +1,8 @@
 # 🤖 AI Prompts
 
-This file tracks all AI-assisted changes made to the Grocery List app using NEXA/CoPilot.
+This document tracks all AI-assisted changes made to the Grocery List app using NEXA/CoPilot.
+
+← [Back to README](../README.md)
 
 * 🆕 Created GitHub Repo
   * It needed an access token because `gh auth` didn't work.
@@ -25,28 +27,22 @@ This file tracks all AI-assisted changes made to the Grocery List app using NEXA
   * Selected items stored in `localStorage` to persist across views
   * Shop view shows cart with per-item Remove button
   * Removing from cart deselects the row on the Grocery List
-  * Cart section hidden when empty
 * 🗑️ Removed "Clear All" button (too dangerous!)
-* 🔠 Auto-capitalize first letter of item names on add
-  * Updated existing JSON items to match
-* 🛒 Renamed "Home" nav item to "Grocery List" with cart emoji
+* �� Auto-capitalize first letter of item names on add
+* 🛒 Renamed nav item to "Grocery List" with cart emoji
 * ☁️ Published to Azure App Service
   * Required quota increase to create App Service
   * Live at: https://smartgrocerylist-bwa8bkgha7eqacaz.eastus-01.azurewebsites.net/
 * 📵 Hide category, Save, and Remove buttons on mobile (< 576px)
-  * Clean shopping experience on small screens
-* 🔤 Alphabetized entries within each category in EmojiHelper
-  * Categories also sorted alphabetically
-* 🏪 Added Store view
-  * Lists all items from EmojiHelper grouped by category
-  * Items already on grocery list show ✅ Added
-  * ➕ Add button adds item directly to grocery list
+* 🔤 Alphabetized EmojiHelper entries within each category
+* 🏪 Added Store view grouped by category
   * Refactored EmojiHelper to use `StoreItem` records with Name, Emoji, Category
+  * Items already on list show ✅ Added
 * ⭐ "Add Staples" button selects all Staple items at once
-* 💾🗑️ Save and Remove buttons now use emoji icons
+* 💾🗑️ Save and Remove buttons use emoji icons
 * 🚫 Prevent duplicate items from being added
 * 🗂️ Category field changed to Staple / Other dropdown
-* 🧹 Removed redundant Grocery List nav item (brand link navigates home)
+* 🧹 Removed redundant Grocery List nav item
 * 🛒 Deleting an item from Home also removes it from the Shop cart
 * ✂️ Removed strikethrough on selected Home list items
 * 🩶 Shop list rows turn grey when tapped (toggle on/off)

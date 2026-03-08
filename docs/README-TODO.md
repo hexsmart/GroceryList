@@ -1,6 +1,6 @@
 # 📋 TODO
 
-← [Back to README](README.md)
+← [Back to README](../README.md)
 
 - [ ] [Display the categories on the home page, breaking out the items](https://github.com/hexsmart/GroceryList/issues/1)
   - [ ] Categories should be collapsible

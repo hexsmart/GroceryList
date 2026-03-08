@@ -12,14 +12,14 @@ NEXA is adding to the prompts below after major milestones _(even minor ones)_
 
 ## 📅 Activity Log
 
-🔍 [View the Activity Log](README-ActivityLog.md)
+🔍 [View the Activity Log](docs/README-ActivityLog.md)
 
 ## 📋 TODO
 
-🔍 [View the TODO list](README-TODO.md)
+🔍 [View the TODO list](docs/README-TODO.md)
 
 ## 🤖 AI Prompts
 
 This project is being built entirely through AI prompts using NEXA/CoPilot.
 
-🔍 [View the full AI Prompts history](README-AI-Prompts.md)
+🔍 [View the full AI Prompts history](docs/README-AI-Prompts.md)
