@@ -485,4 +485,6 @@ $RECYCLE.BIN/
 
 # Grocery data file
 groceries.json
+groceries-*.json
 settings.json
+users.json

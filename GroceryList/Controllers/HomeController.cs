@@ -16,16 +16,28 @@ public class HomeController : Controller
         _settingsService = settingsService;
     }
 
+    private string? UserId => HttpContext.Session.GetString("UserId");
+
+    private IActionResult RequireLogin()
+    {
+        if (UserId == null) return RedirectToAction("Login", "Account");
+        return null!;
+    }
+
     public IActionResult Index()
     {
-        var items = _groceryService.GetAll();
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
+        var items = _groceryService.GetAll(UserId!);
         ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
         return View(items);
     }
 
     public IActionResult Store()
     {
-        var existing = _groceryService.GetAll().Select(i => i.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
+        var existing = _groceryService.GetAll(UserId!).Select(i => i.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var model = new StoreViewModel
         {
             StoreItems = GroceryList.Helpers.EmojiHelper.GetAllItems(),
@@ -36,6 +48,8 @@ public class HomeController : Controller
 
     public IActionResult Shop()
     {
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
         ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
         return View();
     }
@@ -50,20 +64,24 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Add(string items)
     {
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
         if (!string.IsNullOrWhiteSpace(items))
-            _groceryService.AddItems(items);
+            _groceryService.AddItems(UserId!, items);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public IActionResult UpdateCategory(Guid id, string category)
     {
-        var items = _groceryService.GetAll();
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
+        var items = _groceryService.GetAll(UserId!);
         var item = items.FirstOrDefault(i => i.Id == id);
         if (item != null)
         {
             item.Category = category ?? string.Empty;
-            _groceryService.Save(items);
+            _groceryService.Save(UserId!, items);
         }
         return RedirectToAction(nameof(Index));
     }
@@ -71,14 +89,18 @@ public class HomeController : Controller
     [HttpPost]
     public IActionResult Remove(Guid id)
     {
-        _groceryService.RemoveItem(id);
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
+        _groceryService.RemoveItem(UserId!, id);
         return RedirectToAction(nameof(Index));
     }
 
     [HttpPost]
     public IActionResult Clear()
     {
-        _groceryService.ClearAll();
+        var redirect = RequireLogin();
+        if (redirect != null) return redirect;
+        _groceryService.ClearAll(UserId!);
         return RedirectToAction(nameof(Index));
     }
 

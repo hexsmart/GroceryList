@@ -5,29 +5,33 @@ namespace GroceryList.Services;
 
 public class GroceryService
 {
-    private readonly string _filePath;
+    private readonly string _contentRoot;
 
     public GroceryService(IWebHostEnvironment env)
     {
-        _filePath = Path.Combine(env.ContentRootPath, "groceries.json");
+        _contentRoot = env.ContentRootPath;
     }
 
-    public List<GroceryItem> GetAll()
+    private string FilePath(string userId) =>
+        Path.Combine(_contentRoot, $"groceries-{userId}.json");
+
+    public List<GroceryItem> GetAll(string userId)
     {
-        if (!File.Exists(_filePath)) return new List<GroceryItem>();
-        var json = File.ReadAllText(_filePath);
+        var path = FilePath(userId);
+        if (!File.Exists(path)) return new List<GroceryItem>();
+        var json = File.ReadAllText(path);
         var items = JsonSerializer.Deserialize<List<GroceryItem>>(json) ?? new List<GroceryItem>();
         return items.OrderBy(i => i.Name, StringComparer.OrdinalIgnoreCase).ToList();
     }
 
-    public void Save(List<GroceryItem> items)
+    public void Save(string userId, List<GroceryItem> items)
     {
-        File.WriteAllText(_filePath, JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
+        File.WriteAllText(FilePath(userId), JsonSerializer.Serialize(items, new JsonSerializerOptions { WriteIndented = true }));
     }
 
-    public void AddItems(string commaSeparated)
+    public void AddItems(string userId, string commaSeparated)
     {
-        var items = GetAll();
+        var items = GetAll(userId);
         var existing = items.Select(i => i.Name).ToHashSet(StringComparer.OrdinalIgnoreCase);
         var names = commaSeparated.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
         foreach (var name in names)
@@ -39,21 +43,21 @@ public class GroceryService
                 existing.Add(capitalized);
             }
         }
-        Save(items);
+        Save(userId, items);
     }
 
     private static string Capitalize(string s) =>
         string.IsNullOrWhiteSpace(s) ? s : char.ToUpper(s[0]) + s.Substring(1);
 
-    public void RemoveItem(Guid id)
+    public void RemoveItem(string userId, Guid id)
     {
-        var items = GetAll();
+        var items = GetAll(userId);
         items.RemoveAll(i => i.Id == id);
-        Save(items);
+        Save(userId, items);
     }
 
-    public void ClearAll()
+    public void ClearAll(string userId)
     {
-        Save(new List<GroceryItem>());
+        Save(userId, new List<GroceryItem>());
     }
 }
