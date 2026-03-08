@@ -4,36 +4,39 @@ public static class EmojiHelper
 {
     private static readonly Dictionary<string, string> _map = new(StringComparer.OrdinalIgnoreCase)
     {
-        // Dairy
-        { "milk", "🥛" }, { "cheese", "🧀" }, { "butter", "🧈" }, { "yogurt", "🥛" }, { "cream", "🥛" }, { "eggs", "🥚" }, { "egg", "🥚" },
-        // Produce
-        { "apple", "🍎" }, { "apples", "🍎" }, { "banana", "🍌" }, { "bananas", "🍌" }, { "orange", "🍊" }, { "oranges", "🍊" },
-        { "grapes", "🍇" }, { "strawberry", "🍓" }, { "strawberries", "🍓" }, { "watermelon", "🍉" }, { "lemon", "🍋" }, { "lemons", "🍋" },
-        { "peach", "🍑" }, { "peaches", "🍑" }, { "pear", "🍐" }, { "pears", "🍐" }, { "cherry", "🍒" }, { "cherries", "🍒" },
-        { "mango", "🥭" }, { "pineapple", "🍍" }, { "coconut", "🥥" }, { "avocado", "🥑" }, { "tomato", "🍅" }, { "tomatoes", "🍅" },
-        { "carrot", "🥕" }, { "carrots", "🥕" }, { "corn", "🌽" }, { "broccoli", "🥦" }, { "lettuce", "🥬" }, { "salad", "🥬" },{ "spinach", "🥬" },
-        { "cucumber", "🥒" }, { "peppers", "🫑" }, { "pepper", "🫑" }, { "onion", "🧅" }, { "onions", "🧅" }, { "garlic", "🧄" },
-        { "potato", "🥔" }, { "potatoes", "🥔" }, { "mushroom", "🍄" }, { "mushrooms", "🍄" }, { "eggplant", "🍆" },
-        // Meat & Seafood
-        { "chicken", "🍗" }, { "beef", "🥩" }, { "steak", "🥩" }, { "pork", "🥩" }, { "bacon", "🥓" }, { "fish", "🐟" },
-        { "salmon", "🐟" }, { "shrimp", "🍤" }, { "lobster", "🦞" }, { "crab", "🦀" }, { "turkey", "🦃" }, { "ham", "🍖" }, { "sausage", "🌭" },
-        // Bread & Grains
-        { "bread", "🍞" }, { "rice", "🍚" }, { "pasta", "🍝" }, { "noodles", "🍜" }, { "cereal", "🥣" }, { "oats", "🥣" },
-        { "bagel", "🥯" }, { "croissant", "🥐" }, { "tortilla", "🫓" }, { "tortillas", "🫓" }, { "crackers", "🍘" },
         // Beverages
-        { "water", "💧" }, { "juice", "🧃" }, { "coffee", "☕" }, { "tea", "🍵" }, { "beer", "🍺" }, { "wine", "🍷" },
-        { "soda", "🥤" }, { "cola", "🥤" }, { "smoothie", "🥤" },
-        // Snacks & Sweets
-        { "chocolate", "🍫" }, { "candy", "🍬" }, { "cookies", "🍪" }, { "cake", "🎂" }, { "ice cream", "🍦" }, { "icecream", "🍦" },
-        { "chips", "🍟" }, { "popcorn", "🍿" }, { "nuts", "🥜" }, { "peanuts", "🥜" }, { "honey", "🍯" },
+        { "beer", "🍺" }, { "coffee", "☕" }, { "coke", "🥤" }, { "cola", "🥤" }, { "diet coke", "🥤" },
+        { "juice", "🧃" }, { "smoothie", "🥤" }, { "soda", "🥤" }, { "tea", "🍵" }, { "water", "💧" }, { "wine", "🍷" },
+        // Bread & Grains
+        { "bagel", "🥯" }, { "bread", "🍞" }, { "cereal", "🥣" }, { "crackers", "🍘" }, { "croissant", "🥐" },
+        { "noodles", "🍜" }, { "oats", "🥣" }, { "pasta", "🍝" }, { "rice", "🍚" }, { "tortilla", "🫓" }, { "tortillas", "🫓" },
         // Condiments & Pantry
-        { "salt", "🧂" }, { "sugar", "🍬" }, { "oil", "🫙" }, { "vinegar", "🫙" }, { "ketchup", "🍅" }, { "mustard", "🟡" },
-        { "mayo", "🫙" }, { "mayonnaise", "🫙" }, { "sauce", "🫙" }, { "soup", "🍲" }, { "beans", "🫘" },
+        { "beans", "🫘" }, { "ketchup", "🍅" }, { "mayo", "🫙" }, { "mayonnaise", "🫙" }, { "mustard", "🟡" },
+        { "oil", "🫙" }, { "salt", "🧂" }, { "sauce", "🫙" }, { "soup", "🍲" }, { "sugar", "🍬" }, { "vinegar", "🫙" },
+        // Dairy
+        { "butter", "🧈" }, { "cheese", "🧀" }, { "cream", "🥛" }, { "egg", "🥚" }, { "eggs", "🥚" }, { "milk", "🥛" }, { "yogurt", "🥛" },
         // Frozen
-        { "pizza", "🍕" }, { "frozen", "🧊" },
+        { "frozen", "🧊" }, { "pizza", "🍕" },
         // Household
-        { "soap", "🧼" }, { "shampoo", "🧴" }, { "toilet paper", "🧻" }, { "paper towels", "🧻" }, { "detergent", "🫧" },
-        { "toothpaste", "🪥" }, { "toothbrush", "🪥" },
+        { "detergent", "🫧" }, { "paper towels", "🧻" }, { "shampoo", "🧴" }, { "soap", "🧼" },
+        { "toilet paper", "🧻" }, { "toothbrush", "🪥" }, { "toothpaste", "🪥" },
+        // Meat & Seafood
+        { "bacon", "🥓" }, { "beef", "🥩" }, { "chicken", "🍗" }, { "crab", "🦀" }, { "fish", "🐟" },
+        { "ham", "🍖" }, { "lobster", "🦞" }, { "pork", "🥩" }, { "salmon", "🐟" }, { "sausage", "🌭" },
+        { "shrimp", "🍤" }, { "steak", "🥩" }, { "turkey", "🦃" },
+        // Produce
+        { "apple", "🍎" }, { "apples", "🍎" }, { "avocado", "🥑" }, { "banana", "🍌" }, { "bananas", "🍌" },
+        { "broccoli", "🥦" }, { "carrot", "🥕" }, { "carrots", "🥕" }, { "cherries", "🍒" }, { "cherry", "🍒" },
+        { "coconut", "🥥" }, { "corn", "🌽" }, { "cucumber", "🥒" }, { "eggplant", "🍆" }, { "garlic", "🧄" },
+        { "grapes", "🍇" }, { "lemon", "🍋" }, { "lemons", "🍋" }, { "lettuce", "🥬" }, { "mango", "🥭" },
+        { "mushroom", "🍄" }, { "mushrooms", "🍄" }, { "onion", "🧅" }, { "onions", "🧅" }, { "orange", "🍊" },
+        { "oranges", "🍊" }, { "peach", "🍑" }, { "peaches", "🍑" }, { "pear", "🍐" }, { "pears", "🍐" },
+        { "pepper", "🫑" }, { "peppers", "🫑" }, { "pineapple", "🍍" }, { "potato", "🥔" }, { "potatoes", "🥔" },
+        { "salad", "🥬" }, { "spinach", "🥬" }, { "strawberries", "🍓" }, { "strawberry", "🍓" },
+        { "tomato", "🍅" }, { "tomatoes", "🍅" }, { "watermelon", "🍉" },
+        // Snacks & Sweets
+        { "cake", "🎂" }, { "candy", "🍬" }, { "chips", "🍟" }, { "chocolate", "🍫" }, { "cookies", "🍪" },
+        { "honey", "🍯" }, { "ice cream", "🍦" }, { "icecream", "🍦" }, { "nuts", "🥜" }, { "peanuts", "🥜" }, { "popcorn", "🍿" },
     };
 
     public static string GetEmoji(string itemName)
