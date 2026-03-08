@@ -23,6 +23,24 @@ public class EmojiHelperTests
     }
 
     [Fact]
+    public void GetCategory_ReturnsCorrectCategory_ForKnownItem()
+    {
+        Assert.Equal("Dairy", EmojiHelper.GetCategory("Milk"));
+    }
+
+    [Fact]
+    public void GetCategory_ReturnsOther_ForUnknownItem()
+    {
+        Assert.Equal("Other", EmojiHelper.GetCategory("Xyz123"));
+    }
+
+    [Fact]
+    public void GetCategory_IsCaseInsensitive()
+    {
+        Assert.Equal(EmojiHelper.GetCategory("milk"), EmojiHelper.GetCategory("MILK"));
+    }
+
+    [Fact]
     public void GetAllItems_ReturnsNonEmptyList()
     {
         Assert.NotEmpty(EmojiHelper.GetAllItems());
