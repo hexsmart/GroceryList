@@ -274,6 +274,15 @@
             container.style.display = '';
             flatList.style.display = 'none';
             btn.textContent = '📋 Flat View';
+            // Refresh all category badges to reflect current selection
+            document.querySelectorAll('#category-container > [data-category]').forEach(section => {
+                const catId = section.dataset.category.replace(/ /g, '-').replace(/&/g, 'and');
+                const badge = document.getElementById('count-' + catId);
+                if (!badge) return;
+                const total = section.querySelectorAll('li').length;
+                const selected = section.querySelectorAll('li.selected').length;
+                badge.textContent = selected > 0 ? `${selected}/${total}` : total;
+            });
         }
     }
 
