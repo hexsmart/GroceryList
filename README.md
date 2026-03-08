@@ -42,4 +42,8 @@ NEXA is adding to the prompts below after major milestones _(even minor ones)_
 * 🛒 Renamed "Home" nav item to "Grocery List" with cart emoji
 * ☁️ Published to Azure App Service
   * Required quota increase to create App Service
-  * Ask for link if you want to try it out.
+  * Live at: https://smartgrocerylist-bwa8bkgha7eqacaz.eastus-01.azurewebsites.net/
+* 📵 Hide category, Save, and Remove buttons on mobile (< 576px)
+  * Clean shopping experience on small screens
+* 🔤 Alphabetized entries within each category in EmojiHelper
+  * Categories also sorted alphabetically
