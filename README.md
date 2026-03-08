@@ -45,5 +45,6 @@ NEXA is adding to the prompts below after major milestones _(even minor ones)_
   * Live at: https://smartgrocerylist-bwa8bkgha7eqacaz.eastus-01.azurewebsites.net/
 * 📵 Hide category, Save, and Remove buttons on mobile (< 576px)
   * Clean shopping experience on small screens
+  * _(user can't edit on phone)_
 * 🔤 Alphabetized entries within each category in EmojiHelper
   * Categories also sorted alphabetically

@@ -31,11 +31,11 @@
                     <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
                         <input type="hidden" name="id" value="@item.Id" />
                         <input type="text" name="category" value="@item.Category" class="form-control form-control-sm" style="width:140px" placeholder="Category" onclick="event.stopPropagation()" />
-                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">Save</button>
+                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
                     </form>
                     <form asp-action="Remove" method="post" class="mb-0">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <button class="btn btn-sm btn-danger" type="submit" onclick="event.stopPropagation()">Remove</button>
+                        <button class="btn btn-sm btn-danger" type="submit" onclick="event.stopPropagation()">🗑️</button>
                     </form>
                 </div>
             </li>
