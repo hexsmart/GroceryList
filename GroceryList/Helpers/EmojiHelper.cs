@@ -9,6 +9,7 @@ public static class EmojiHelper
         // Beverages
         new("Beer", "🍺", "Beverages"),
         new("Coffee", "☕", "Beverages"),
+        new("Diet Coke", "🥤", "Beverages"),
         new("Juice", "🧃", "Beverages"),
         new("Soda", "🥤", "Beverages"),
         new("Tea", "🍵", "Beverages"),
