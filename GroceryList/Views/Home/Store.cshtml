@@ -18,7 +18,7 @@
 
 <div class="mb-3">
     <button class="btn btn-outline-secondary btn-sm" onclick="expandCollapseAll()">
-        <span id="expand-collapse-label">⬇️ Collapse All</span>
+        <span id="expand-collapse-label">🔽 Collapse All</span>
     </button>
 </div>
 
@@ -81,7 +81,7 @@
 
     // Sync button label to current state
     const anyExpanded = Array.from(document.querySelectorAll('.category-items')).some(el => !el.classList.contains('collapsed'));
-    document.getElementById('expand-collapse-label').textContent = anyExpanded ? '⬇️ Collapse All' : '➡️ Expand All';
+    document.getElementById('expand-collapse-label').textContent = anyExpanded ? '🔽 Collapse All' : '🔼 Expand All';
 
     // Drag-to-reorder
     Sortable.create(document.getElementById('store-container'), {
@@ -114,7 +114,7 @@
             }
         });
         localStorage.setItem('storeCatCollapsed', JSON.stringify(storeCatCollapsed));
-        document.getElementById('expand-collapse-label').textContent = allCollapsed ? '⬇️ Collapse All' : '➡️ Expand All';
+        document.getElementById('expand-collapse-label').textContent = allCollapsed ? '🔽 Collapse All' : '🔼 Expand All';
     }
 
     function toggleCollapse(catId) {
