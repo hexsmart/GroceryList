@@ -116,6 +116,13 @@ public static class EmojiHelper
         return match?.Emoji ?? "🛒";
     }
 
+    public static string GetCategory(string itemName)
+    {
+        var lower = itemName.ToLower().Trim();
+        var match = _items.FirstOrDefault(i => lower.Contains(i.Name.ToLower()));
+        return match?.Category ?? "Other";
+    }
+
     public static List<StoreItem> GetAllItems() =>
         _items.OrderBy(i => i.Name).ToList();
 }

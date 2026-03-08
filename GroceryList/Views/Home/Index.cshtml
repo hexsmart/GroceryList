@@ -2,6 +2,7 @@
 @using GroceryList.Helpers
 @{
     ViewData["Title"] = "Grocery List";
+    var grouped = Model.GroupBy(i => EmojiHelper.GetCategory(i.Name)).OrderBy(g => g.Key).ToList();
 }
 
 <h1 class="mb-4">🛒 Grocery List</h1>
@@ -18,36 +19,59 @@
     <div class="mb-3">
         <button class="btn btn-success" onclick="selectStaples()">⭐ Add Staples</button>
     </div>
-    <ul class="list-group mb-4">
-        @foreach (var item in Model)
+
+    <div id="category-container">
+        @foreach (var group in grouped)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row"
-                style="cursor:pointer"
-                data-id="@item.Id"
-                data-name="@EmojiHelper.GetEmoji(item.Name) @item.Name"
-                data-category="@item.Category"
-                onclick="toggleRow(this)">
-                <div class="d-flex align-items-center gap-2">
-                    <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
-                    <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
+            var catId = group.Key.Replace(" ", "-");
+            <div class="category-section mb-3" data-category="@group.Key">
+                <div class="d-flex align-items-center gap-2 mb-1">
+                    <span class="drag-handle text-muted" title="Drag to reorder" style="cursor:grab; font-size:1.1rem">⠿</span>
+                    <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
+                            onclick="toggleCollapse('@catId')">
+                        <span id="chevron-@catId">▾</span> @group.Key
+                        <span class="badge bg-secondary ms-1">@group.Count()</span>
+                    </button>
+                    <button type="button" class="btn btn-sm btn-outline-secondary ms-1" title="Toggle category visibility"
+                            onclick="toggleVisibility('@catId')">
+                        <span id="eye-@catId">👁️</span>
+                    </button>
                 </div>
-                <div class="d-none d-sm-flex align-items-center gap-2">
-                    <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
-                        <input type="hidden" name="id" value="@item.Id" />
-                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation()">
-                            <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
-                            <option value="Other" selected="@(item.Category == "Other")">Other</option>
-                        </select>
-                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
-                    </form>
-                    <form asp-action="Remove" method="post" class="mb-0" id="remove-@item.Id">
-                        <input type="hidden" name="id" value="@item.Id" />
-                        <button class="btn btn-sm btn-danger" type="button" onclick="event.stopPropagation(); removeFromCart('@item.Id'); document.getElementById('remove-@item.Id').submit()">🗑️</button>
-                    </form>
+                <div id="items-@catId" class="category-items">
+                    <ul class="list-group mb-2">
+                        @foreach (var item in group)
+                        {
+                            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row"
+                                style="cursor:pointer"
+                                data-id="@item.Id"
+                                data-name="@EmojiHelper.GetEmoji(item.Name) @item.Name"
+                                data-category="@item.Category"
+                                onclick="toggleRow(this)">
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
+                                    <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
+                                </div>
+                                <div class="d-none d-sm-flex align-items-center gap-2">
+                                    <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation()">
+                                            <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
+                                            <option value="Other" selected="@(item.Category == "Other")">Other</option>
+                                        </select>
+                                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
+                                    </form>
+                                    <form asp-action="Remove" method="post" class="mb-0" id="remove-@item.Id">
+                                        <input type="hidden" name="id" value="@item.Id" />
+                                        <button class="btn btn-sm btn-danger" type="button" onclick="event.stopPropagation(); removeFromCart('@item.Id'); document.getElementById('remove-@item.Id').submit()">🗑️</button>
+                                    </form>
+                                </div>
+                            </li>
+                        }
+                    </ul>
                 </div>
-            </li>
+            </div>
         }
-    </ul>
+    </div>
 }
 else
 {
@@ -58,18 +82,84 @@ else
     .grocery-row.selected {
         background-color: #d1e7dd;
     }
+    .category-items.collapsed {
+        display: none;
+    }
+    .category-section.hidden > *:not(:first-child) {
+        display: none;
+    }
+    .category-section.hidden .btn-link {
+        opacity: 0.4;
+    }
+    .drag-handle:active {
+        cursor: grabbing;
+    }
 </style>
 
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.3/Sortable.min.js"></script>
 <script>
     const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
+    const catCollapsed = JSON.parse(localStorage.getItem('catCollapsed') || '{}');
+    const catHidden = JSON.parse(localStorage.getItem('catHidden') || '{}');
+    const catOrder = JSON.parse(localStorage.getItem('catOrder') || '[]');
 
-    // Restore selections on page load
+    // Restore cart selections
     document.querySelectorAll('.grocery-row').forEach(row => {
         if (cart[row.dataset.id]) {
             row.classList.add('selected');
             row.querySelector('.row-checkbox').checked = true;
         }
     });
+
+    // Restore collapsed state
+    document.querySelectorAll('.category-section').forEach(section => {
+        const catId = section.dataset.category.replace(/ /g, '-');
+        if (catCollapsed[catId]) {
+            document.getElementById('items-' + catId).classList.add('collapsed');
+            document.getElementById('chevron-' + catId).textContent = '▸';
+        }
+        if (catHidden[catId]) {
+            section.classList.add('hidden');
+            document.getElementById('eye-' + catId).textContent = '🚫';
+        }
+    });
+
+    // Restore category order
+    if (catOrder.length) {
+        const container = document.getElementById('category-container');
+        catOrder.forEach(cat => {
+            const el = container.querySelector(`.category-section[data-category="${cat}"]`);
+            if (el) container.appendChild(el);
+        });
+    }
+
+    // Enable drag-to-reorder
+    Sortable.create(document.getElementById('category-container'), {
+        handle: '.drag-handle',
+        animation: 150,
+        onEnd: () => {
+            const order = [...document.querySelectorAll('.category-section')].map(s => s.dataset.category);
+            localStorage.setItem('catOrder', JSON.stringify(order));
+        }
+    });
+
+    function toggleCollapse(catId) {
+        const items = document.getElementById('items-' + catId);
+        const chevron = document.getElementById('chevron-' + catId);
+        const isCollapsed = items.classList.toggle('collapsed');
+        chevron.textContent = isCollapsed ? '▸' : '▾';
+        catCollapsed[catId] = isCollapsed;
+        localStorage.setItem('catCollapsed', JSON.stringify(catCollapsed));
+    }
+
+    function toggleVisibility(catId) {
+        const section = document.querySelector(`.category-section[data-category="${catId.replace(/-/g, ' ')}"]`);
+        const eye = document.getElementById('eye-' + catId);
+        const isHidden = section.classList.toggle('hidden');
+        eye.textContent = isHidden ? '🚫' : '👁️';
+        catHidden[catId] = isHidden;
+        localStorage.setItem('catHidden', JSON.stringify(catHidden));
+    }
 
     function toggleRow(row) {
         const checkbox = row.querySelector('.row-checkbox');
@@ -84,6 +174,7 @@ else
         }
         localStorage.setItem('groceryCart', JSON.stringify(cart));
     }
+
     function removeFromCart(id) {
         const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
         delete cart[id];
