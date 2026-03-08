@@ -208,7 +208,7 @@
         if (!badge) return;
         const total = section.querySelectorAll('#items-' + catId + ' li').length;
         const selected = section.querySelectorAll('#items-' + catId + ' li.selected').length;
-        badge.textContent = total - selected;
+        badge.textContent = selected > 0 ? `${selected}/${total}` : total;
     }
 
     function makeFlatItem(id, name) {
