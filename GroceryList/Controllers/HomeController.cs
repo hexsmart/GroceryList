@@ -8,15 +8,18 @@ namespace GroceryList.Controllers;
 public class HomeController : Controller
 {
     private readonly GroceryService _groceryService;
+    private readonly SettingsService _settingsService;
 
-    public HomeController(GroceryService groceryService)
+    public HomeController(GroceryService groceryService, SettingsService settingsService)
     {
         _groceryService = groceryService;
+        _settingsService = settingsService;
     }
 
     public IActionResult Index()
     {
         var items = _groceryService.GetAll();
+        ViewBag.CategoryOrder = _settingsService.GetCategoryOrder();
         return View(items);
     }
 
@@ -34,6 +37,13 @@ public class HomeController : Controller
     public IActionResult Shop()
     {
         return View();
+    }
+
+    [HttpPost]
+    public IActionResult SaveCategoryOrder([FromBody] List<string> order)
+    {
+        _settingsService.SaveCategoryOrder(order);
+        return Ok();
     }
 
     [HttpPost]

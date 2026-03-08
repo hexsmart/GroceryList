@@ -3,6 +3,14 @@
 @{
     ViewData["Title"] = "Grocery List";
     var grouped = Model.GroupBy(i => EmojiHelper.GetCategory(i.Name)).OrderBy(g => g.Key).ToList();
+    var savedOrder = ViewBag.CategoryOrder as List<string> ?? new List<string>();
+    if (savedOrder.Any())
+    {
+        grouped = grouped.OrderBy(g => {
+            var idx = savedOrder.IndexOf(g.Key);
+            return idx == -1 ? int.MaxValue : idx;
+        }).ToList();
+    }
 }
 
 <h1 class="mb-4">🛒 Grocery List</h1>
@@ -181,6 +189,11 @@
         onEnd: () => {
             const order = [...document.querySelectorAll('.category-section')].map(s => s.dataset.category);
             localStorage.setItem('catOrder', JSON.stringify(order));
+            fetch('/Home/SaveCategoryOrder', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(order)
+            });
         }
     });
 
