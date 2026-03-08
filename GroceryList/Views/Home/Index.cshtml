@@ -27,7 +27,7 @@
                     <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
                     <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
                 </div>
-                <div class="d-flex align-items-center gap-2">
+                <div class="d-none d-sm-flex align-items-center gap-2">
                     <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
                         <input type="hidden" name="id" value="@item.Id" />
                         <input type="text" name="category" value="@item.Category" class="form-control form-control-sm" style="width:140px" placeholder="Category" onclick="event.stopPropagation()" />
