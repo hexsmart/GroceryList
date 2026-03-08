@@ -22,6 +22,7 @@
     const list = document.getElementById('cart-list');
     const emptyMsg = document.getElementById('empty-msg');
     const clearAllBtn = document.getElementById('clear-all-btn');
+    const selected = JSON.parse(localStorage.getItem('shopSelected') || '[]');
 
     if (Object.keys(cart).length === 0) {
         emptyMsg.style.display = 'block';
@@ -29,8 +30,6 @@
         Object.entries(cart).forEach(([id, name]) => addCartItem(id, name));
         clearAllBtn.style.display = 'inline-block';
     }
-
-    const selected = JSON.parse(localStorage.getItem('shopSelected') || '[]');
 
     function addCartItem(id, name) {
         const li = document.createElement('li');
