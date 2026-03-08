@@ -16,8 +16,9 @@
 
 @if (Model.Any())
 {
-    <div class="mb-3">
+    <div class="mb-3 d-flex gap-2">
         <button class="btn btn-success" onclick="selectStaples()">⭐ Add Staples</button>
+        <button class="btn btn-outline-secondary" id="view-toggle-btn" onclick="toggleViewMode()">📋 Flat View</button>
     </div>
 
     <div id="category-container">
@@ -72,8 +73,38 @@
             </div>
         }
     </div>
-}
-else
+
+    <ul class="list-group mb-4" id="flat-container" style="display:none">
+        @foreach (var item in Model)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center grocery-row"
+                style="cursor:pointer"
+                data-id="@item.Id"
+                data-name="@EmojiHelper.GetEmoji(item.Name) @item.Name"
+                data-category="@item.Category"
+                onclick="toggleRow(this)">
+                <div class="d-flex align-items-center gap-2">
+                    <input type="checkbox" class="form-check-input row-checkbox mt-0" onclick="event.stopPropagation(); toggleRow(this.closest('.grocery-row'))" />
+                    <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
+                </div>
+                <div class="d-none d-sm-flex align-items-center gap-2">
+                    <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation()">
+                            <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
+                            <option value="Other" selected="@(item.Category == "Other")">Other</option>
+                        </select>
+                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
+                    </form>
+                    <form asp-action="Remove" method="post" class="mb-0" id="flat-remove-@item.Id">
+                        <input type="hidden" name="id" value="@item.Id" />
+                        <button class="btn btn-sm btn-danger" type="button" onclick="event.stopPropagation(); removeFromCart('@item.Id'); document.getElementById('flat-remove-@item.Id').submit()">🗑️</button>
+                    </form>
+                </div>
+            </li>
+        }
+    </ul>
+}else
 {
     <p class="text-muted">No items yet. Add some above!</p>
 }
@@ -102,6 +133,30 @@ else
     const catCollapsed = JSON.parse(localStorage.getItem('catCollapsed') || '{}');
     const catHidden = JSON.parse(localStorage.getItem('catHidden') || '{}');
     const catOrder = JSON.parse(localStorage.getItem('catOrder') || '[]');
+    let flatMode = localStorage.getItem('flatMode') === 'true';
+
+    function applyViewMode() {
+        const grouped = document.getElementById('category-container');
+        const flat = document.getElementById('flat-container');
+        const btn = document.getElementById('view-toggle-btn');
+        if (flatMode) {
+            grouped.style.display = 'none';
+            flat.style.display = '';
+            btn.textContent = '🗂️ Category View';
+        } else {
+            grouped.style.display = '';
+            flat.style.display = 'none';
+            btn.textContent = '📋 Flat View';
+        }
+    }
+
+    function toggleViewMode() {
+        flatMode = !flatMode;
+        localStorage.setItem('flatMode', flatMode);
+        applyViewMode();
+    }
+
+    applyViewMode();
 
     // Restore cart selections
     document.querySelectorAll('.grocery-row').forEach(row => {
