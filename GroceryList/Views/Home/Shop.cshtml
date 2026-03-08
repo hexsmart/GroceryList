@@ -26,7 +26,9 @@
 
     if (Object.keys(cart).length === 0) {
         emptyMsg.style.display = 'block';
+        clearAllBtn.style.display = 'none';
     } else {
+        emptyMsg.style.display = 'none';
         Object.entries(cart).forEach(([id, name]) => addCartItem(id, name));
         clearAllBtn.style.display = 'inline-block';
     }
