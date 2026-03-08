@@ -18,6 +18,7 @@
 {
     <div class="mb-3 d-flex gap-2">
         <button class="btn btn-success" onclick="selectStaples()">⭐ Add Staples</button>
+        <button class="btn btn-outline-danger" onclick="deselectAll()">✖ Clear Selection</button>
         <button class="btn btn-outline-secondary" id="view-toggle-btn" onclick="toggleViewMode()">📋 Flat View</button>
     </div>
 
@@ -210,6 +211,10 @@
         const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
         delete cart[id];
         localStorage.setItem('groceryCart', JSON.stringify(cart));
+    }
+
+    function deselectAll() {
+        document.querySelectorAll('.grocery-row.selected').forEach(row => toggleRow(row));
     }
 
     function selectStaples() {
