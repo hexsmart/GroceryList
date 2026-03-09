@@ -11,6 +11,7 @@
 - [ ] [Investigate SignalR for real-time updates](https://github.com/hexsmart/GroceryList/issues/4)
 - [ ] [Allow the user to update their theme](https://github.com/hexsmart/GroceryList/issues/5)
 - [ ] [Preserve cart selection state across all views](https://github.com/hexsmart/GroceryList/issues/6)
+  * [ ] Might need to preserve this in a file
 - [ ] [Support multiple stores with custom item lists](https://github.com/hexsmart/GroceryList/issues/7)
   * [ ] Create a Store model (name, description, category/item list)
   * [ ] Add a default grocery store (current behavior)
@@ -31,3 +32,14 @@
   * [ ] Credits (developer, tools used)
   * [ ] Link to the GitHub repo
   * [ ] Add About link to the navbar
+- [ ] [Add Import/Export for user data (grocery list and settings)](https://github.com/hexsmart/GroceryList/issues/10)
+  * [ ] Export grocery list to JSON or CSV
+  * [ ] Export settings (category order, colors, etc.) to JSON
+  * [ ] Import grocery list from file
+  * [ ] Import settings from file
+  * [ ] Add Import/Export UI to a settings or profile page
+- [ ] [Background process to clean up inactive user files](https://github.com/hexsmart/GroceryList/issues/11)
+  * [ ] Track last-active timestamp per user
+  * [ ] Scheduled background task (runs once daily)
+  * [ ] Delete grocery list, settings, and user files after 30 days of inactivity
+  * [ ] Log cleanup activity
