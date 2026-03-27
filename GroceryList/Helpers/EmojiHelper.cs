@@ -32,6 +32,8 @@ public static class EmojiHelper
         new("Mayonnaise", "🫙", "Condiments & Pantry"),
         new("Mustard", "🟡", "Condiments & Pantry"),
         new("Oil", "🫙", "Condiments & Pantry"),
+        new("Pepper", "🧂", "Condiments & Pantry"),
+        new("Pepper Corns", "🧂", "Condiments & Pantry"),
         new("Salt", "🧂", "Condiments & Pantry"),
         new("Sauce", "🫙", "Condiments & Pantry"),
         new("Soup", "🍲", "Condiments & Pantry"),
@@ -130,4 +132,3 @@ public static class EmojiHelper
     public static List<StoreItem> GetAllItems() =>
         _items.OrderBy(i => i.Name).ToList();
 }
-
