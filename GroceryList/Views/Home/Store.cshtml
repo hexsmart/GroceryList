@@ -90,11 +90,16 @@
         onEnd: function () {
             const order = Array.from(document.querySelectorAll('#store-container > [data-category]'))
                 .map(el => el.dataset.category);
+            
+            // Save to server
             fetch('/Home/SaveCategoryOrder', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(order)
             });
+            
+            // Update localStorage so other pages reflect the new order
+            localStorage.setItem('catOrder', JSON.stringify(order));
         }
     });
 
