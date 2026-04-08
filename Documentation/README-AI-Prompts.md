@@ -130,9 +130,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Removed drag handles from Index (Home) and Shop pages
   * Category order can now only be changed via the Store page
   * Prevents confusion from accidental category reordering on other pages
-  * Created `SharedListServiceTests` with 20 comprehensive tests (82 total tests now)
-  * Features:
-    * Create shared lists with custom names
+  * Fixed category order sync by updating localStorage when reordering on Store page
     * Invite users by email
     * Owner can add/remove members and rename/delete lists
     * Members can view/edit shared lists and leave lists
