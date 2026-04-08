@@ -109,7 +109,7 @@
                                 <div class="d-none d-sm-flex align-items-center gap-2">
                                     <form asp-action="UpdateCategory" method="post" class="mb-0" id="update-cat-@item.Id">
                                         <input type="hidden" name="id" value="@item.Id" />
-                                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation(); document.getElementById('update-cat-@item.Id').submit()">
+                                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation(); updateCategory('update-cat-@item.Id')">
                                             <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
                                             <option value="Other" selected="@(item.Category == "Other")">Other</option>
                                         </select>
@@ -143,7 +143,7 @@
                 <div class="d-none d-sm-flex align-items-center gap-2">
                     <form asp-action="UpdateCategory" method="post" class="mb-0" id="flat-update-cat-@item.Id">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation(); document.getElementById('flat-update-cat-@item.Id').submit()">
+                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation(); updateCategory('flat-update-cat-@item.Id')">
                             <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
                             <option value="Other" selected="@(item.Category == "Other")">Other</option>
                         </select>
@@ -268,6 +268,20 @@
         document.querySelectorAll('.grocery-row').forEach(row => {
             if (row.dataset.category.toLowerCase() === 'staple' && !row.classList.contains('selected')) {
                 toggleRow(row);
+            }
+        });
+    }
+
+    function updateCategory(formId) {
+        const form = document.getElementById(formId);
+        const formData = new FormData(form);
+        
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => {
+            if (!response.ok) {
+                console.error('Failed to update category');
             }
         });
     }
