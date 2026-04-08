@@ -126,6 +126,13 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Added list switcher dropdown to Index, Store, and Shop views
   * Added "Shared Lists" navigation link
   * All grocery operations now work with both personal and shared lists
+  * Access control enforces owner-only operations (add/remove members, rename, delete)
+  * Members can view/edit lists and leave at any time
+  * Created `SharedListServiceTests` with 20 comprehensive tests covering all scenarios
+  * All 82 tests passing (62 original + 20 new)
+* 🧹 **Repository cleanup**
+  * Removed empty `docs/` folder (duplicate of `Documentation/` folder)
+  * Updated `.gitignore` to exclude user-generated JSON data files (groceries, shared lists)
   * Created `SharedListServiceTests` with 20 comprehensive tests (82 total tests now)
   * Features:
     * Create shared lists with custom names
