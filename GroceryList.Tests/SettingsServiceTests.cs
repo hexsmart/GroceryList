@@ -25,33 +25,7 @@ public class SettingsServiceTests
     public void Cleanup() => Directory.Delete(_dir, recursive: true);
 
     [TestMethod]
-    public void GetCategoryOrder_ReturnsEmpty_WhenNoFile()
-    {
-        var order = _service.GetCategoryOrder(UserId);
-        Assert.AreEqual(0, order.Count);
-    }
-
-    [TestMethod]
-    public void SaveAndGet_RoundTrips_CategoryOrder()
-    {
-        var order = new List<string> { "Produce", "Dairy", "Beverages" };
-        _service.SaveCategoryOrder(UserId, order);
-        var result = _service.GetCategoryOrder(UserId);
-        CollectionAssert.AreEqual(order, result);
-    }
-
-    [TestMethod]
-    public void SaveCategoryOrder_OverwritesPreviousOrder()
-    {
-        _service.SaveCategoryOrder(UserId, new List<string> { "Produce", "Dairy" });
-        _service.SaveCategoryOrder(UserId, new List<string> { "Dairy", "Produce" });
-        var result = _service.GetCategoryOrder(UserId);
-        Assert.AreEqual("Dairy", result[0]);
-        Assert.AreEqual("Produce", result[1]);
-    }
-
-    [TestMethod]
-    public void DifferentUsers_HaveSeparateSettings()
+    public void SettingsService_DifferentUsers_HaveSeparateSettings()
     {
         _service.SaveCategoryOrder("user-a", new List<string> { "Produce", "Dairy" });
         _service.SaveCategoryOrder("user-b", new List<string> { "Beverages", "Frozen" });
@@ -64,7 +38,7 @@ public class SettingsServiceTests
     }
 
     [TestMethod]
-    public void GetCategoryOrder_ReturnsEmpty_ForUnknownUser()
+    public void SettingsService_GetCategoryOrder_ReturnsEmptyForUnknownUser()
     {
         _service.SaveCategoryOrder("other-user", new List<string> { "Produce" });
         var result = _service.GetCategoryOrder("unknown-user");
@@ -72,9 +46,35 @@ public class SettingsServiceTests
     }
 
     [TestMethod]
-    public void SaveCategoryOrder_CreatesFile_PerUser()
+    public void SettingsService_GetCategoryOrder_ReturnsEmptyWhenNoFile()
+    {
+        var order = _service.GetCategoryOrder(UserId);
+        Assert.AreEqual(0, order.Count);
+    }
+
+    [TestMethod]
+    public void SettingsService_SaveAndGet_RoundTripsCategoryOrder()
+    {
+        var order = new List<string> { "Produce", "Dairy", "Beverages" };
+        _service.SaveCategoryOrder(UserId, order);
+        var result = _service.GetCategoryOrder(UserId);
+        CollectionAssert.AreEqual(order, result);
+    }
+
+    [TestMethod]
+    public void SettingsService_SaveCategoryOrder_CreatesFilePerUser()
     {
         _service.SaveCategoryOrder("user-x", new List<string> { "Dairy" });
         Assert.IsTrue(File.Exists(Path.Combine(_dir, "settings-user-x.json")));
+    }
+
+    [TestMethod]
+    public void SettingsService_SaveCategoryOrder_OverwritesPreviousOrder()
+    {
+        _service.SaveCategoryOrder(UserId, new List<string> { "Produce", "Dairy" });
+        _service.SaveCategoryOrder(UserId, new List<string> { "Dairy", "Produce" });
+        var result = _service.GetCategoryOrder(UserId);
+        Assert.AreEqual("Dairy", result[0]);
+        Assert.AreEqual("Produce", result[1]);
     }
 }

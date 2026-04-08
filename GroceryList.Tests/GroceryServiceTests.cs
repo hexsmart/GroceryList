@@ -25,13 +25,7 @@ public class GroceryServiceTests
     public void Cleanup() => Directory.Delete(_dir, recursive: true);
 
     [TestMethod]
-    public void GetAll_ReturnsEmpty_WhenNoFile()
-    {
-        Assert.AreEqual(0, _service.GetAll(UserId).Count);
-    }
-
-    [TestMethod]
-    public void AddItems_AddsASingleItem()
+    public void GroceryService_AddItems_AddsASingleItem()
     {
         _service.AddItems(UserId, "Milk");
         Assert.AreEqual(1, _service.GetAll(UserId).Count);
@@ -39,21 +33,21 @@ public class GroceryServiceTests
     }
 
     [TestMethod]
-    public void AddItems_CapitalizesFirstLetter()
+    public void GroceryService_AddItems_CapitalizesFirstLetter()
     {
         _service.AddItems(UserId, "milk");
         Assert.AreEqual("Milk", _service.GetAll(UserId)[0].Name);
     }
 
     [TestMethod]
-    public void AddItems_ParsesCommaSeparatedItems()
+    public void GroceryService_AddItems_ParsesCommaSeparatedItems()
     {
         _service.AddItems(UserId, "Milk, Eggs, Bread");
         Assert.AreEqual(3, _service.GetAll(UserId).Count);
     }
 
     [TestMethod]
-    public void AddItems_PreventsDuplicates()
+    public void GroceryService_AddItems_PreventsDuplicates()
     {
         _service.AddItems(UserId, "Milk");
         _service.AddItems(UserId, "Milk");
@@ -61,7 +55,7 @@ public class GroceryServiceTests
     }
 
     [TestMethod]
-    public void AddItems_PreventsDuplicates_CaseInsensitive()
+    public void GroceryService_AddItems_PreventsDuplicatesCaseInsensitive()
     {
         _service.AddItems(UserId, "Milk");
         _service.AddItems(UserId, "milk");
@@ -69,7 +63,7 @@ public class GroceryServiceTests
     }
 
     [TestMethod]
-    public void AddItems_ReturnsAlphabetizedList()
+    public void GroceryService_AddItems_ReturnsAlphabetizedList()
     {
         _service.AddItems(UserId, "Zebra, Apple, Mango");
         var items = _service.GetAll(UserId);
@@ -79,7 +73,47 @@ public class GroceryServiceTests
     }
 
     [TestMethod]
-    public void RemoveItem_RemovesCorrectItem()
+    public void GroceryService_ClearAll_RemovesAllItems()
+    {
+        _service.AddItems(UserId, "Milk, Eggs, Bread");
+        _service.ClearAll(UserId);
+        Assert.AreEqual(0, _service.GetAll(UserId).Count);
+    }
+
+    [TestMethod]
+    public void GroceryService_DifferentUsers_HaveSeparateLists()
+    {
+        _service.AddItems("user-a", "Milk");
+        _service.AddItems("user-b", "Eggs");
+        Assert.AreEqual("Milk", _service.GetAll("user-a")[0].Name);
+        Assert.AreEqual("Eggs", _service.GetAll("user-b")[0].Name);
+        Assert.AreEqual(1, _service.GetAll("user-a").Count);
+        Assert.AreEqual(1, _service.GetAll("user-b").Count);
+    }
+
+    [TestMethod]
+    public void GroceryService_GetAll_ReturnsEmptyWhenNoFile()
+    {
+        Assert.AreEqual(0, _service.GetAll(UserId).Count);
+    }
+
+    [TestMethod]
+    public void GroceryService_NewItem_DefaultsToStapleCategory()
+    {
+        _service.AddItems(UserId, "Milk");
+        Assert.AreEqual("Staple", _service.GetAll(UserId)[0].Category);
+    }
+
+    [TestMethod]
+    public void GroceryService_RemoveItem_DoesNothingWhenIdNotFound()
+    {
+        _service.AddItems(UserId, "Milk");
+        _service.RemoveItem(UserId, Guid.NewGuid());
+        Assert.AreEqual(1, _service.GetAll(UserId).Count);
+    }
+
+    [TestMethod]
+    public void GroceryService_RemoveItem_RemovesCorrectItem()
     {
         _service.AddItems(UserId, "Milk, Eggs");
         var milkId = _service.GetAll(UserId).First(i => i.Name == "Milk").Id;
@@ -90,46 +124,12 @@ public class GroceryServiceTests
     }
 
     [TestMethod]
-    public void RemoveItem_DoesNothing_WhenIdNotFound()
-    {
-        _service.AddItems(UserId, "Milk");
-        _service.RemoveItem(UserId, Guid.NewGuid());
-        Assert.AreEqual(1, _service.GetAll(UserId).Count);
-    }
-
-    [TestMethod]
-    public void ClearAll_RemovesAllItems()
-    {
-        _service.AddItems(UserId, "Milk, Eggs, Bread");
-        _service.ClearAll(UserId);
-        Assert.AreEqual(0, _service.GetAll(UserId).Count);
-    }
-
-    [TestMethod]
-    public void NewItem_DefaultsToStapleCategory()
-    {
-        _service.AddItems(UserId, "Milk");
-        Assert.AreEqual("Staple", _service.GetAll(UserId)[0].Category);
-    }
-
-    [TestMethod]
-    public void Save_PersistsUpdatedCategory()
+    public void GroceryService_Save_PersistsUpdatedCategory()
     {
         _service.AddItems(UserId, "Milk");
         var items = _service.GetAll(UserId);
         items[0].Category = "Other";
         _service.Save(UserId, items);
         Assert.AreEqual("Other", _service.GetAll(UserId)[0].Category);
-    }
-
-    [TestMethod]
-    public void DifferentUsers_HaveSeparateLists()
-    {
-        _service.AddItems("user-a", "Milk");
-        _service.AddItems("user-b", "Eggs");
-        Assert.AreEqual("Milk", _service.GetAll("user-a")[0].Name);
-        Assert.AreEqual("Eggs", _service.GetAll("user-b")[0].Name);
-        Assert.AreEqual(1, _service.GetAll("user-a").Count);
-        Assert.AreEqual(1, _service.GetAll("user-b").Count);
     }
 }

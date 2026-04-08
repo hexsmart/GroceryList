@@ -6,11 +6,21 @@ public class UserProfile
 {
     private static readonly EmailAddressAttribute _emailValidator = new();
     private string _email = string.Empty;
+    private string _firstName = string.Empty;
+    private string _lastName = string.Empty;
 
     public Guid Id { get; set; } = Guid.NewGuid();
-    public string FirstName { get; set; } = string.Empty;
-    public string LastName { get; set; } = string.Empty;
+    public string FirstName
+    {
+        get => _firstName;
+        set => _firstName = value ?? string.Empty;
+    }
 
+    public string LastName
+    {
+        get => _lastName;
+        set => _lastName = value ?? string.Empty;
+    }
     [EmailAddress]
     public string Email
     {
