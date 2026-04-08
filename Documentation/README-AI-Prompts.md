@@ -135,6 +135,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Removed save buttons (💾) next to category dropdowns
   * Category changes now auto-save when dropdown value changes
   * Provides immediate feedback and streamlines the workflow
+  * Changed to AJAX submission to prevent page scroll on category update
   * Category order can now only be changed via the Store page
   * Prevents confusion from accidental category reordering on other pages
   * Fixed category order sync by updating localStorage when reordering on Store page
