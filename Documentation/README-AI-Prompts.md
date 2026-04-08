@@ -96,20 +96,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 ## 2026-04-08
 
 * 🧪 **Converted test framework from xUnit to MSTest**
-  * Replaced xUnit packages with `MSTest.TestAdapter` and `MSTest.TestFramework`
-  * Updated all test classes with `[TestClass]` attribute
-  * Converted `[Fact]` attributes to `[TestMethod]`
-  * Replaced constructor/`IDisposable` pattern with `[TestInitialize]` and `[TestCleanup]`
-  * Converted all xUnit assertions to MSTest equivalents:
-    * `Assert.Equal` → `Assert.AreEqual`
-    * `Assert.NotEqual` → `Assert.AreNotEqual`
-    * `Assert.Empty` → `Assert.AreEqual(0, collection.Count)`
-    * `Assert.Single` → `Assert.AreEqual(1, collection.Count)`
-    * `Assert.NotEmpty` → `Assert.IsTrue(collection.Any())`
-    * `Assert.True/False` → `Assert.IsTrue/IsFalse`
-    * `Assert.NotNull/Null` → `Assert.IsNotNull/IsNull`
-    * Collection comparisons → `CollectionAssert.AreEqual`
   * All 49 tests passing with MSTest framework
-  * Added `UserProfileTests.cs` with 10 tests for the UserProfile model
+  * Added `UserProfileTests.cs` with 10 new tests
   * Fixed duplicate property definitions in `UserProfile.cs`
 
