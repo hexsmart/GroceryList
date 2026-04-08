@@ -86,7 +86,6 @@
             var catId = group.Key.Replace(" ", "-");
             <div class="category-section mb-3" data-category="@group.Key">
                 <div class="d-flex align-items-center gap-2 mb-1">
-                    <span class="drag-handle text-muted" title="Drag to reorder" style="cursor:grab; font-size:1.1rem">⠿</span>
                     <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
                             onclick="toggleCollapse('@catId')">
                         <span id="chevron-@catId">▾</span> @group.Key
@@ -232,20 +231,7 @@
         });
     }
 
-    // Enable drag-to-reorder
-    Sortable.create(document.getElementById('category-container'), {
-        handle: '.drag-handle',
-        animation: 150,
-        onEnd: () => {
-            const order = [...document.querySelectorAll('.category-section')].map(s => s.dataset.category);
-            localStorage.setItem('catOrder', JSON.stringify(order));
-            fetch('/Home/SaveCategoryOrder', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(order)
-            });
-        }
-    });
+    // Category reordering is disabled on this page (use Store page to reorder)
 
     function toggleCollapse(catId) {
         const items = document.getElementById('items-' + catId);
