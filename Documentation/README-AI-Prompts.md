@@ -108,3 +108,6 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * All test methods renamed to `ClassName_PropertyOrMethod_Description` pattern
   * All test methods alphabetized within each class
   * Applied to: `EmojiHelperTests`, `UserProfileTests`, `GroceryItemTests`, `UserServiceTests`, `SettingsServiceTests`, `GroceryServiceTests`
+* ⬆️ **Upgraded from .NET 9 to .NET 10**
+  * Updated `TargetFramework` in both project files
+  * All 62 tests pass on .NET 10
