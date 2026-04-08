@@ -131,6 +131,13 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Category order can now only be changed via the Store page
   * Prevents confusion from accidental category reordering on other pages
   * Fixed category order sync by updating localStorage when reordering on Store page
+* ⚡ **Improved category dropdown UX on Home page**
+  * Removed save buttons (💾) next to category dropdowns
+  * Category changes now auto-save when dropdown value changes
+  * Provides immediate feedback and streamlines the workflow
+  * Category order can now only be changed via the Store page
+  * Prevents confusion from accidental category reordering on other pages
+  * Fixed category order sync by updating localStorage when reordering on Store page
     * Invite users by email
     * Owner can add/remove members and rename/delete lists
     * Members can view/edit shared lists and leave lists
