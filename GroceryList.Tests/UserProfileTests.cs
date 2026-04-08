@@ -2,49 +2,50 @@ using GroceryList.Models;
 
 namespace GroceryList.Tests;
 
+[TestClass]
 public class UserProfileTests
 {
-    [Fact]
+    [TestMethod]
     public void NewUserProfile_HasNonEmptyGuid()
     {
         // Arrange & Act
         var userProfile = new UserProfile();
 
         // Assert
-        Assert.NotEqual(Guid.Empty, userProfile.Id);
+        Assert.AreNotEqual(Guid.Empty, userProfile.Id);
     }
 
-    [Fact]
+    [TestMethod]
     public void NewUserProfile_DefaultsToEmptyFirstName()
     {
         // Arrange & Act
         var userProfile = new UserProfile();
 
         // Assert
-        Assert.Equal(string.Empty, userProfile.FirstName);
+        Assert.AreEqual(string.Empty, userProfile.FirstName);
     }
 
-    [Fact]
+    [TestMethod]
     public void NewUserProfile_DefaultsToEmptyLastName()
     {
         // Arrange & Act
         var userProfile = new UserProfile();
 
         // Assert
-        Assert.Equal(string.Empty, userProfile.LastName);
+        Assert.AreEqual(string.Empty, userProfile.LastName);
     }
 
-    [Fact]
+    [TestMethod]
     public void NewUserProfile_DefaultsToEmptyEmail()
     {
         // Arrange & Act
         var userProfile = new UserProfile();
 
         // Assert
-        Assert.Equal(string.Empty, userProfile.Email);
+        Assert.AreEqual(string.Empty, userProfile.Email);
     }
 
-    [Fact]
+    [TestMethod]
     public void UserProfile_CanSetFirstName()
     {
         // Arrange
@@ -55,10 +56,10 @@ public class UserProfileTests
         userProfile.FirstName = expectedFirstName;
 
         // Assert
-        Assert.Equal(expectedFirstName, userProfile.FirstName);
+        Assert.AreEqual(expectedFirstName, userProfile.FirstName);
     }
 
-    [Fact]
+    [TestMethod]
     public void UserProfile_CanSetLastName()
     {
         // Arrange
@@ -69,10 +70,10 @@ public class UserProfileTests
         userProfile.LastName = expectedLastName;
 
         // Assert
-        Assert.Equal(expectedLastName, userProfile.LastName);
+        Assert.AreEqual(expectedLastName, userProfile.LastName);
     }
 
-    [Fact]
+    [TestMethod]
     public void UserProfile_CanSetEmail()
     {
         // Arrange
@@ -83,10 +84,10 @@ public class UserProfileTests
         userProfile.Email = expectedEmail;
 
         // Assert
-        Assert.Equal(expectedEmail, userProfile.Email);
+        Assert.AreEqual(expectedEmail, userProfile.Email);
     }
 
-    [Fact]
+    [TestMethod]
     public void UserProfile_CanSetId()
     {
         // Arrange
@@ -97,10 +98,10 @@ public class UserProfileTests
         userProfile.Id = expectedId;
 
         // Assert
-        Assert.Equal(expectedId, userProfile.Id);
+        Assert.AreEqual(expectedId, userProfile.Id);
     }
 
-    [Fact]
+    [TestMethod]
     public void UserProfile_EachInstanceHasUniqueId()
     {
         // Arrange & Act
@@ -108,10 +109,10 @@ public class UserProfileTests
         var userProfile2 = new UserProfile();
 
         // Assert
-        Assert.NotEqual(userProfile1.Id, userProfile2.Id);
+        Assert.AreNotEqual(userProfile1.Id, userProfile2.Id);
     }
 
-    [Fact]
+    [TestMethod]
     public void UserProfile_CanCreateWithObjectInitializer()
     {
         // Arrange
@@ -128,9 +129,9 @@ public class UserProfileTests
         };
 
         // Assert
-        Assert.Equal(expectedFirstName, userProfile.FirstName);
-        Assert.Equal(expectedLastName, userProfile.LastName);
-        Assert.Equal(expectedEmail, userProfile.Email);
-        Assert.NotEqual(Guid.Empty, userProfile.Id);
+        Assert.AreEqual(expectedFirstName, userProfile.FirstName);
+        Assert.AreEqual(expectedLastName, userProfile.LastName);
+        Assert.AreEqual(expectedEmail, userProfile.Email);
+        Assert.AreNotEqual(Guid.Empty, userProfile.Id);
     }
 }

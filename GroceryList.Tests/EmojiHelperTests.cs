@@ -2,65 +2,66 @@ using GroceryList.Helpers;
 
 namespace GroceryList.Tests;
 
+[TestClass]
 public class EmojiHelperTests
 {
-    [Fact]
+    [TestMethod]
     public void GetEmoji_ReturnsCorrectEmoji_ForKnownItem()
     {
-        Assert.Equal("🥛", EmojiHelper.GetEmoji("Milk"));
+        Assert.AreEqual("🥛", EmojiHelper.GetEmoji("Milk"));
     }
 
-    [Fact]
+    [TestMethod]
     public void GetEmoji_ReturnsTrolley_ForUnknownItem()
     {
-        Assert.Equal("🛒", EmojiHelper.GetEmoji("Xyz123"));
+        Assert.AreEqual("🛒", EmojiHelper.GetEmoji("Xyz123"));
     }
 
-    [Fact]
+    [TestMethod]
     public void GetEmoji_IsCaseInsensitive()
     {
-        Assert.Equal(EmojiHelper.GetEmoji("milk"), EmojiHelper.GetEmoji("MILK"));
+        Assert.AreEqual(EmojiHelper.GetEmoji("milk"), EmojiHelper.GetEmoji("MILK"));
     }
 
-    [Fact]
+    [TestMethod]
     public void GetCategory_ReturnsCorrectCategory_ForKnownItem()
     {
-        Assert.Equal("Dairy", EmojiHelper.GetCategory("Milk"));
+        Assert.AreEqual("Dairy", EmojiHelper.GetCategory("Milk"));
     }
 
-    [Fact]
+    [TestMethod]
     public void GetCategory_ReturnsOther_ForUnknownItem()
     {
-        Assert.Equal("Other", EmojiHelper.GetCategory("Xyz123"));
+        Assert.AreEqual("Other", EmojiHelper.GetCategory("Xyz123"));
     }
 
-    [Fact]
+    [TestMethod]
     public void GetCategory_IsCaseInsensitive()
     {
-        Assert.Equal(EmojiHelper.GetCategory("milk"), EmojiHelper.GetCategory("MILK"));
+        Assert.AreEqual(EmojiHelper.GetCategory("milk"), EmojiHelper.GetCategory("MILK"));
     }
 
-    [Fact]
+    [TestMethod]
     public void GetAllItems_ReturnsNonEmptyList()
     {
-        Assert.NotEmpty(EmojiHelper.GetAllItems());
+        Assert.IsTrue(EmojiHelper.GetAllItems().Any());
     }
 
-    [Fact]
+    [TestMethod]
     public void GetAllItems_ReturnsAlphabetizedList()
     {
         var names = EmojiHelper.GetAllItems().Select(i => i.Name).ToList();
-        Assert.Equal(names.OrderBy(n => n).ToList(), names);
+        CollectionAssert.AreEqual(names.OrderBy(n => n).ToList(), names);
     }
 
-    [Fact]
+    [TestMethod]
     public void GetAllItems_EachItemHasNameEmojiAndCategory()
     {
         foreach (var item in EmojiHelper.GetAllItems())
         {
-            Assert.False(string.IsNullOrWhiteSpace(item.Name));
-            Assert.False(string.IsNullOrWhiteSpace(item.Emoji));
-            Assert.False(string.IsNullOrWhiteSpace(item.Category));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(item.Name));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(item.Emoji));
+            Assert.IsFalse(string.IsNullOrWhiteSpace(item.Category));
         }
     }
 }

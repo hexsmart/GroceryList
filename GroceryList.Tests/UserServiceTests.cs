@@ -4,12 +4,14 @@ using Moq;
 
 namespace GroceryList.Tests;
 
-public class UserServiceTests : IDisposable
+[TestClass]
+public class UserServiceTests
 {
-    private readonly string _dir;
-    private readonly UserService _service;
+    private string _dir = null!;
+    private UserService _service = null!;
 
-    public UserServiceTests()
+    [TestInitialize]
+    public void Initialize()
     {
         _dir = Path.Combine(Path.GetTempPath(), Guid.NewGuid().ToString());
         Directory.CreateDirectory(_dir);
@@ -18,69 +20,70 @@ public class UserServiceTests : IDisposable
         _service = new UserService(env.Object);
     }
 
-    public void Dispose() => Directory.Delete(_dir, recursive: true);
+    [TestCleanup]
+    public void Cleanup() => Directory.Delete(_dir, recursive: true);
 
-    [Fact]
+    [TestMethod]
     public void GetAll_ReturnsEmpty_WhenNoFile()
     {
-        Assert.Empty(_service.GetAll());
+        Assert.AreEqual(0, _service.GetAll().Count);
     }
 
-    [Fact]
+    [TestMethod]
     public void Register_AddsUser()
     {
         _service.Register("Jane", "Doe", "jane@example.com");
-        Assert.Single(_service.GetAll());
+        Assert.AreEqual(1, _service.GetAll().Count);
     }
 
-    [Fact]
+    [TestMethod]
     public void Register_PersistsAllFields()
     {
         _service.Register("Jane", "Doe", "jane@example.com");
         var user = _service.GetAll()[0];
-        Assert.Equal("Jane", user.FirstName);
-        Assert.Equal("Doe", user.LastName);
-        Assert.Equal("jane@example.com", user.Email);
+        Assert.AreEqual("Jane", user.FirstName);
+        Assert.AreEqual("Doe", user.LastName);
+        Assert.AreEqual("jane@example.com", user.Email);
     }
 
-    [Fact]
+    [TestMethod]
     public void Register_AssignsUniqueId()
     {
         _service.Register("Jane", "Doe", "jane@example.com");
         _service.Register("John", "Smith", "john@example.com");
         var users = _service.GetAll();
-        Assert.NotEqual(users[0].Id, users[1].Id);
+        Assert.AreNotEqual(users[0].Id, users[1].Id);
     }
 
-    [Fact]
+    [TestMethod]
     public void FindByEmail_ReturnsCorrectUser()
     {
         _service.Register("Jane", "Doe", "jane@example.com");
         var user = _service.FindByEmail("jane@example.com");
-        Assert.NotNull(user);
-        Assert.Equal("Jane", user!.FirstName);
+        Assert.IsNotNull(user);
+        Assert.AreEqual("Jane", user!.FirstName);
     }
 
-    [Fact]
+    [TestMethod]
     public void FindByEmail_IsCaseInsensitive()
     {
         _service.Register("Jane", "Doe", "jane@example.com");
         var user = _service.FindByEmail("JANE@EXAMPLE.COM");
-        Assert.NotNull(user);
+        Assert.IsNotNull(user);
     }
 
-    [Fact]
+    [TestMethod]
     public void FindByEmail_ReturnsNull_WhenNotFound()
     {
         var user = _service.FindByEmail("nobody@example.com");
-        Assert.Null(user);
+        Assert.IsNull(user);
     }
 
-    [Fact]
+    [TestMethod]
     public void Register_MultipleUsers_AllPersisted()
     {
         _service.Register("Jane", "Doe", "jane@example.com");
         _service.Register("John", "Smith", "john@example.com");
-        Assert.Equal(2, _service.GetAll().Count);
+        Assert.AreEqual(2, _service.GetAll().Count);
     }
 }

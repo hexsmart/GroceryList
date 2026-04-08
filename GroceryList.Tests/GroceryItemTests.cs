@@ -2,23 +2,24 @@ using GroceryList.Models;
 
 namespace GroceryList.Tests;
 
+[TestClass]
 public class GroceryItemTests
 {
-    [Fact]
+    [TestMethod]
     public void NewGroceryItem_HasNonEmptyGuid()
     {
-        Assert.NotEqual(Guid.Empty, new GroceryItem().Id);
+        Assert.AreNotEqual(Guid.Empty, new GroceryItem().Id);
     }
 
-    [Fact]
+    [TestMethod]
     public void NewGroceryItem_DefaultsToStapleCategory()
     {
-        Assert.Equal("Staple", new GroceryItem().Category);
+        Assert.AreEqual("Staple", new GroceryItem().Category);
     }
 
-    [Fact]
+    [TestMethod]
     public void NewGroceryItem_DefaultsToEmptyName()
     {
-        Assert.Equal(string.Empty, new GroceryItem().Name);
+        Assert.AreEqual(string.Empty, new GroceryItem().Name);
     }
 }
