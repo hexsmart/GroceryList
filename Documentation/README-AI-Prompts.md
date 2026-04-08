@@ -99,3 +99,12 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * All 49 tests passing with MSTest framework
   * Added `UserProfileTests.cs` with 10 new tests
   * Fixed duplicate property definitions in `UserProfile.cs`
+* 🛡️ **Added null-safety to models**
+  * `UserProfile.cs`: Private backing fields with null-to-empty-string conversion for all properties
+  * `GroceryItem.cs`: Private backing fields with null-safety (Name → empty, Category → "Staple")
+* 🧪 **Expanded and standardized all test classes** (62 total tests)
+  * `UserProfileTests.cs`: Expanded to 16 tests (added email validation and null-safety tests)
+  * `GroceryItemTests.cs`: Expanded to 10 tests (added setter, null-safety, and object initializer tests)
+  * All test methods renamed to `ClassName_PropertyOrMethod_Description` pattern
+  * All test methods alphabetized within each class
+  * Applied to: `EmojiHelperTests`, `UserProfileTests`, `GroceryItemTests`, `UserServiceTests`, `SettingsServiceTests`, `GroceryServiceTests`
