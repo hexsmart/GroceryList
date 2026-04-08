@@ -114,3 +114,6 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 * 📋 **Created `README-Normal-Behaviors.md`**
   * Documents established patterns and preferences for AI-assisted work
   * Includes git workflows, testing standards, and consistency patterns
+* ✏️ **Standardized markdown formatting in `README-Normal-Behaviors.md`**
+  * Changed all bullet points from `-` (hyphens) to `*` (asterisks)
+  * Added "Markdown Style" section documenting this preference
