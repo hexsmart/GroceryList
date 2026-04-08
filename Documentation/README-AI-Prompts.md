@@ -126,6 +126,10 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 * 🧹 **Repository cleanup**
   * Removed empty `docs/` folder
   * Updated `.gitignore` to exclude user-generated JSON data files
+* 🔒 **Restricted category reordering to Store page only**
+  * Removed drag handles from Index (Home) and Shop pages
+  * Category order can now only be changed via the Store page
+  * Prevents confusion from accidental category reordering on other pages
   * Created `SharedListServiceTests` with 20 comprehensive tests (82 total tests now)
   * Features:
     * Create shared lists with custom names
