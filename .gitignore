@@ -484,8 +484,10 @@ $RECYCLE.BIN/
 *.swp
 
 # Grocery data file
+all-shared-lists.json
 groceries.json
 groceries-*.json
 settings.json
 settings-*.json
+shared-list-*.json
 users.json
