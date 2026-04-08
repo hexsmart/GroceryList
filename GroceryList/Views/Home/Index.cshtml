@@ -107,13 +107,12 @@
                                     <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
                                 </div>
                                 <div class="d-none d-sm-flex align-items-center gap-2">
-                                    <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
+                                    <form asp-action="UpdateCategory" method="post" class="mb-0" id="update-cat-@item.Id">
                                         <input type="hidden" name="id" value="@item.Id" />
-                                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation()">
+                                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation(); document.getElementById('update-cat-@item.Id').submit()">
                                             <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
                                             <option value="Other" selected="@(item.Category == "Other")">Other</option>
                                         </select>
-                                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
                                     </form>
                                     <form asp-action="Remove" method="post" class="mb-0" id="remove-@item.Id">
                                         <input type="hidden" name="id" value="@item.Id" />
@@ -142,13 +141,12 @@
                     <span class="fw-semibold item-name">@EmojiHelper.GetEmoji(item.Name) @item.Name</span>
                 </div>
                 <div class="d-none d-sm-flex align-items-center gap-2">
-                    <form asp-action="UpdateCategory" method="post" class="d-flex align-items-center gap-1 mb-0">
+                    <form asp-action="UpdateCategory" method="post" class="mb-0" id="flat-update-cat-@item.Id">
                         <input type="hidden" name="id" value="@item.Id" />
-                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation()">
+                        <select name="category" class="form-select form-select-sm" style="width:110px" onclick="event.stopPropagation()" onchange="event.stopPropagation(); document.getElementById('flat-update-cat-@item.Id').submit()">
                             <option value="Staple" selected="@(item.Category == "Staple")">Staple</option>
                             <option value="Other" selected="@(item.Category == "Other")">Other</option>
                         </select>
-                        <button class="btn btn-sm btn-outline-secondary" type="submit" onclick="event.stopPropagation()">💾</button>
                     </form>
                     <form asp-action="Remove" method="post" class="mb-0" id="flat-remove-@item.Id">
                         <input type="hidden" name="id" value="@item.Id" />
