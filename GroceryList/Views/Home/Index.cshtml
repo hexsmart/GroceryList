@@ -11,9 +11,59 @@
             return idx == -1 ? int.MaxValue : idx;
         }).ToList();
     }
+    var currentListName = ViewBag.CurrentListName as string ?? "My Grocery List";
+    var sharedLists = ViewBag.SharedLists as List<GroceryList.Models.SharedList> ?? new List<GroceryList.Models.SharedList>();
+    var userId = Context.Session.GetString("UserId");
+    var currentListId = ViewBag.CurrentListId as string;
 }
 
-<h1 class="mb-4">🛒 Grocery List</h1>
+<!-- List Switcher -->
+<div class="row mb-3">
+    <div class="col-md-8">
+        <div class="d-flex align-items-center gap-2">
+            <h1 class="mb-0">🛒 @currentListName</h1>
+            @if (ViewBag.IsSharedList)
+            {
+                <span class="badge bg-info">Shared</span>
+            }
+        </div>
+    </div>
+    <div class="col-md-4 text-end">
+        <div class="btn-group w-100">
+            <button type="button" class="btn btn-outline-primary dropdown-toggle" data-bs-toggle="dropdown">
+                Switch List
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end w-100">
+                <li>
+                    <form asp-action="SwitchList" method="post">
+                        <input type="hidden" name="listId" value="@userId" />
+                        <button type="submit" class="dropdown-item @(currentListId == userId ? "active" : "")">
+                            📋 My Grocery List @(currentListId == userId ? "✓" : "")
+                        </button>
+                    </form>
+                </li>
+                @if (sharedLists.Any())
+                {
+                    <li><hr class="dropdown-divider"></li>
+                    <li><h6 class="dropdown-header">Shared Lists</h6></li>
+                    @foreach (var list in sharedLists)
+                    {
+                        <li>
+                            <form asp-action="SwitchList" method="post">
+                                <input type="hidden" name="listId" value="@list.Id" />
+                                <button type="submit" class="dropdown-item @(currentListId == list.Id.ToString() ? "active" : "")">
+                                    🤝 @list.Name @(currentListId == list.Id.ToString() ? "✓" : "")
+                                </button>
+                            </form>
+                        </li>
+                    }
+                }
+                <li><hr class="dropdown-divider"></li>
+                <li><a class="dropdown-item" asp-controller="SharedList" asp-action="Manage">⚙️ Manage Shared Lists</a></li>
+            </ul>
+        </div>
+    </div>
+</div>
 
 <form asp-action="Add" method="post" class="mb-4">
     <div class="input-group">

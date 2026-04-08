@@ -7,7 +7,7 @@
   * [x] Categories can be moved around
   * [x] Categories can be toggled on or off
 - [x] [Allow separate grocery list files based on a user ID](https://github.com/hexsmart/GroceryList/issues/2)
-- [ ] [Allow multiple users to share the same list](https://github.com/hexsmart/GroceryList/issues/3)
+- [x] [Allow multiple users to share the same list](https://github.com/hexsmart/GroceryList/issues/3)
 - [ ] [Investigate SignalR for real-time updates](https://github.com/hexsmart/GroceryList/issues/4)
 - [ ] [Allow the user to update their theme](https://github.com/hexsmart/GroceryList/issues/5)
 - [ ] [Preserve cart selection state across all views](https://github.com/hexsmart/GroceryList/issues/6)

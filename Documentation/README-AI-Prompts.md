@@ -117,3 +117,21 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 * ✏️ **Standardized markdown formatting in `README-Normal-Behaviors.md`**
   * Changed all bullet points from `-` (hyphens) to `*` (asterisks)
   * Added "Markdown Style" section documenting this preference
+* 🤝 **Implemented shared grocery lists feature (Issue #3)**
+  * Created `SharedList` model with owner, members, and creation date tracking
+  * Created `SharedListService` with full CRUD operations for shared lists
+  * Added member management: invite by email, remove members, leave lists
+  * Created `SharedListController` with Manage view for list administration
+  * Updated `HomeController` to support list switching between personal and shared lists
+  * Added list switcher dropdown to Index, Store, and Shop views
+  * Added "Shared Lists" navigation link
+  * All grocery operations now work with both personal and shared lists
+  * Created `SharedListServiceTests` with 20 comprehensive tests (82 total tests now)
+  * Features:
+    * Create shared lists with custom names
+    * Invite users by email
+    * Owner can add/remove members and rename/delete lists
+    * Members can view/edit shared lists and leave lists
+    * Access control: only owners and members can access shared lists
+    * List switcher shows personal list + all accessible shared lists
+    * Session-based tracking of currently active list

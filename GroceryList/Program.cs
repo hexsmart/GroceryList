@@ -5,6 +5,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddSingleton<GroceryList.Services.GroceryService>();
 builder.Services.AddSingleton<GroceryList.Services.SettingsService>();
 builder.Services.AddSingleton<GroceryList.Services.UserService>();
+builder.Services.AddSingleton<GroceryList.Services.SharedListService>();
 builder.Services.AddDistributedMemoryCache();
 builder.Services.AddSession(options =>
 {
