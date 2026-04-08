@@ -111,3 +111,6 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 * ⬆️ **Upgraded from .NET 9 to .NET 10**
   * Updated `TargetFramework` in both project files
   * All 62 tests pass on .NET 10
+* 📋 **Created `README-Normal-Behaviors.md`**
+  * Documents established patterns and preferences for AI-assisted work
+  * Includes git workflows, testing standards, and consistency patterns
