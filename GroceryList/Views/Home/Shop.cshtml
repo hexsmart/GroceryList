@@ -311,14 +311,44 @@
             return;
         }
         
-        // Get all items with their names (which include emojis)
-        const items = Object.values(cart);
+        let text = '';
         
-        // Sort alphabetically for easier reading
-        items.sort((a, b) => a.localeCompare(b));
-        
-        // Format as one item per line
-        const text = items.join('\n');
+        if (flatMode) {
+            // Flat view: copy items in alphabetical order
+            const items = Object.values(cart);
+            items.sort((a, b) => a.localeCompare(b));
+            text = items.join('\n');
+        } else {
+            // Category view: copy items grouped by category in current order
+            const groups = {};
+            Object.entries(cart).forEach(([id, name]) => {
+                const cat = getCategory(name);
+                if (!groups[cat]) groups[cat] = [];
+                groups[cat].push(name);
+            });
+            
+            // Sort categories by saved order (same as display)
+            let cats = Object.keys(groups).sort();
+            if (savedOrder.length) {
+                cats = cats.sort((a, b) => {
+                    const ai = savedOrder.indexOf(a), bi = savedOrder.indexOf(b);
+                    if (ai === -1 && bi === -1) return a.localeCompare(b);
+                    if (ai === -1) return 1;
+                    if (bi === -1) return -1;
+                    return ai - bi;
+                });
+            }
+            
+            // Build text with category headers
+            const lines = [];
+            cats.forEach(cat => {
+                lines.push(''); // Blank line before category (except first)
+                lines.push(cat + ':');
+                groups[cat].sort((a, b) => a.localeCompare(b));
+                groups[cat].forEach(name => lines.push('  ' + name));
+            });
+            text = lines.slice(1).join('\n'); // Remove first blank line
+        }
         
         // Copy to clipboard
         navigator.clipboard.writeText(text).then(() => {
