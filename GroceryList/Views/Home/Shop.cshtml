@@ -20,6 +20,7 @@
 
 <div id="shop-controls" class="mb-3 d-flex gap-2" style="display:none !important">
     <button class="btn btn-outline-secondary" id="view-toggle-btn" onclick="toggleViewMode()">📋 Flat View</button>
+    <button class="btn btn-success" onclick="copyListToClipboard()">📋 Copy List</button>
 </div>
 
 <div id="category-container"></div>
@@ -301,6 +302,38 @@
         document.getElementById('empty-msg').style.display = 'block';
         document.getElementById('shop-controls').style.display = 'none';
         document.getElementById('clear-all-btn').style.display = 'none';
+    }
+
+    function copyListToClipboard() {
+        const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
+        if (Object.keys(cart).length === 0) {
+            alert('Your cart is empty!');
+            return;
+        }
+        
+        // Get all items with their names (which include emojis)
+        const items = Object.values(cart);
+        
+        // Sort alphabetically for easier reading
+        items.sort((a, b) => a.localeCompare(b));
+        
+        // Format as one item per line
+        const text = items.join('\n');
+        
+        // Copy to clipboard
+        navigator.clipboard.writeText(text).then(() => {
+            // Show brief success message
+            const btn = event.target;
+            const originalText = btn.textContent;
+            btn.textContent = '✅ Copied!';
+            btn.classList.remove('btn-success');
+            btn.classList.add('btn-success');
+            setTimeout(() => {
+                btn.textContent = originalText;
+            }, 2000);
+        }).catch(err => {
+            alert('Failed to copy to clipboard: ' + err);
+        });
     }
 
     buildViews();
