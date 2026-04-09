@@ -275,6 +275,8 @@
     function updateCategory(formId) {
         const form = document.getElementById(formId);
         const formData = new FormData(form);
+        const newCategory = formData.get('category');
+        const itemId = formData.get('id');
         
         fetch(form.action, {
             method: 'POST',
@@ -282,6 +284,11 @@
         }).then(response => {
             if (!response.ok) {
                 console.error('Failed to update category');
+            } else {
+                // Update data-category attribute on both views (category and flat)
+                document.querySelectorAll(`.grocery-row[data-id="${itemId}"]`).forEach(row => {
+                    row.dataset.category = newCategory;
+                });
             }
         });
     }
