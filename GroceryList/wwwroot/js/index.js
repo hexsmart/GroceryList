@@ -8,6 +8,11 @@ function applyViewMode() {
     const catView = document.getElementById('category-container');
     const flatView = document.getElementById('flat-list');
     const toggleBtn = document.getElementById('view-toggle-btn');
+    
+    if (!catView || !flatView || !toggleBtn) {
+        return;
+    }
+    
     if (flatMode) {
         catView.style.display = 'none';
         flatView.style.display = '';
@@ -34,11 +39,17 @@ function toggleCollapse(catId) {
     localStorage.setItem('catCollapsed', JSON.stringify(catCollapsed));
 }
 
-function toggleRow(checkbox) {
-    const row = checkbox.closest('tr');
+function toggleRow(row) {
+    const checkbox = row.querySelector('.row-checkbox');
     const id = row.dataset.id;
     const name = row.dataset.name;
-    if (checkbox.checked) {
+    const isSelected = row.classList.toggle('selected');
+    
+    if (checkbox) {
+        checkbox.checked = isSelected;
+    }
+    
+    if (isSelected) {
         cart[id] = name;
     } else {
         delete cart[id];
@@ -64,12 +75,13 @@ function deselectAll() {
 }
 
 function selectStaples() {
-    document.querySelectorAll('tr[data-category="Staple"]').forEach(row => {
+    document.querySelectorAll('.grocery-row[data-category="Staple"]').forEach(row => {
         const id = row.dataset.id;
         const name = row.dataset.name;
-        const cb = row.querySelector('input[type="checkbox"]');
+        const cb = row.querySelector('.row-checkbox');
         if (cb) {
             cb.checked = true;
+            row.classList.add('selected');
             cart[id] = name;
         }
     });
@@ -97,38 +109,30 @@ function updateCategory(formId) {
     });
 }
 
-// Initialize view mode
-applyViewMode();
+// Wait for DOM to be ready before initializing
+document.addEventListener('DOMContentLoaded', function() {
+    // Initialize view mode
+    applyViewMode();
 
-// Restore checkboxes from cart
-Object.keys(cart).forEach(id => {
-    const cbs = document.querySelectorAll(`input[data-id="${id}"]`);
-    cbs.forEach(cb => cb.checked = true);
-});
-
-// Restore collapsed state
-document.querySelectorAll('[id^="items-"]').forEach(el => {
-    const catId = el.id.replace('items-', '');
-    if (catCollapsed[catId]) {
-        el.classList.add('collapsed');
-        const chevron = document.getElementById('chevron-' + catId);
-        if (chevron) chevron.textContent = '▸';
-    }
-});
-
-// Apply category order from localStorage (if available)
-if (catOrder.length > 0) {
-    const container = document.getElementById('category-container');
-    const sections = Array.from(container.querySelectorAll('[data-category]'));
-    sections.sort((a, b) => {
-        const catA = a.dataset.category;
-        const catB = b.dataset.category;
-        const indexA = catOrder.indexOf(catA);
-        const indexB = catOrder.indexOf(catB);
-        if (indexA === -1 && indexB === -1) return catA.localeCompare(catB);
-        if (indexA === -1) return 1;
-        if (indexB === -1) return -1;
-        return indexA - indexB;
+    // Restore checkboxes and selections from cart
+    Object.keys(cart).forEach(id => {
+        const rows = document.querySelectorAll(`.grocery-row[data-id="${id}"]`);
+        rows.forEach(row => {
+            const cb = row.querySelector('.row-checkbox');
+            if (cb) {
+                cb.checked = true;
+                row.classList.add('selected');
+            }
+        });
     });
-    sections.forEach(s => container.appendChild(s));
-}
+
+    // Restore collapsed state
+    document.querySelectorAll('[id^="items-"]').forEach(el => {
+        const catId = el.id.replace('items-', '');
+        if (catCollapsed[catId]) {
+            el.classList.add('collapsed');
+            const chevron = document.getElementById('chevron-' + catId);
+            if (chevron) chevron.textContent = '▸';
+        }
+    });
+});
