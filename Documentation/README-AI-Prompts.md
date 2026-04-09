@@ -146,12 +146,23 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Designed for texting shopping list to others
   * Shows brief success confirmation after copying
   * Fixed category count badge to update when deleting items
-  * Category order can now only be changed via the Store page
-  * Prevents confusion from accidental category reordering on other pages
-  * Fixed category order sync by updating localStorage when reordering on Store page
-    * Invite users by email
-    * Owner can add/remove members and rename/delete lists
-    * Members can view/edit shared lists and leave lists
-    * Access control: only owners and members can access shared lists
-    * List switcher shows personal list + all accessible shared lists
-    * Session-based tracking of currently active list
+
+## 2026-04-09
+
+* 🗂️ **Refactored JavaScript from Home views to external files**
+  * Created three new JavaScript files in `wwwroot/js/`:
+    * `index.js` - Cart management, view toggle, category collapse, staple selection, AJAX category updates
+    * `shop.js` - Cart display, item removal, copy to clipboard, view mode handling
+    * `store.js` - Item selection, category reordering with Sortable
+  * Updated `Index.cshtml`, `Shop.cshtml`, `Store.cshtml`:
+    * Removed embedded `<script>` blocks containing view-specific JavaScript
+    * Kept SortableJS CDN references
+    * Added references to new external JS files with `asp-append-version` for cache-busting
+  * Benefits:
+    * Better code organization (JavaScript separated from markup)
+    * Improved caching (external JS files cached independently)
+    * Easier maintenance (changes don't require editing view files)
+    * Better separation of concerns (Razor views focus on markup, JS files focus on behavior)
+  * Each JS file is self-contained with no shared functions between views
+  * All functionality preserved and tested successfully
+
