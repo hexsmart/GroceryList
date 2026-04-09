@@ -20,7 +20,7 @@
 
 <div id="shop-controls" class="mb-3 d-flex gap-2" style="display:none !important">
     <button class="btn btn-outline-secondary" id="view-toggle-btn" onclick="toggleViewMode()">📋 Flat View</button>
-    <button class="btn btn-success" onclick="copyListToClipboard()">📋 Copy List</button>
+    <button class="btn btn-success" onclick="copyListToClipboard(this)">📋 Copy List</button>
 </div>
 
 <div id="category-container"></div>
@@ -304,7 +304,7 @@
         document.getElementById('clear-all-btn').style.display = 'none';
     }
 
-    function copyListToClipboard() {
+    function copyListToClipboard(btn) {
         const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
         if (Object.keys(cart).length === 0) {
             alert('Your cart is empty!');
@@ -323,7 +323,6 @@
         // Copy to clipboard
         navigator.clipboard.writeText(text).then(() => {
             // Show brief success message
-            const btn = event.target;
             const originalText = btn.textContent;
             btn.textContent = '✅ Copied!';
             btn.classList.remove('btn-success');
