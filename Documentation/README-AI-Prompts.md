@@ -136,6 +136,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
   * Category changes now auto-save when dropdown value changes
   * Provides immediate feedback and streamlines the workflow
   * Changed to AJAX submission to prevent page scroll on category update
+  * Fixed "Add Staples" button to respect category changes (updates data-category attribute after AJAX)
 * 📋 **Added Copy List button on Shop page**
   * New "Copy List" button copies all cart items to clipboard
   * Each item appears on its own line with emoji included
