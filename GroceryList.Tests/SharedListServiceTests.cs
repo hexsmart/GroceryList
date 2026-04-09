@@ -33,6 +33,62 @@ public class SharedListServiceTests
     }
 
     [TestMethod]
+    public void SharedListService_AddMember_AddsUserSuccessfully()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var memberEmail = "member@test.com";
+        _userService.Register("Member", "User", memberEmail);
+
+        var list = _service.CreateSharedList(owner, "Test List");
+        var result = _service.AddMember(list.Id, owner, memberEmail, _userService);
+
+        Assert.IsTrue(result);
+        var updatedList = _service.GetSharedList(list.Id);
+        Assert.AreEqual(1, updatedList!.MemberIds.Count);
+    }
+
+    [TestMethod]
+    public void SharedListService_AddMember_FailsForNonExistentUser()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var list = _service.CreateSharedList(owner, "Test List");
+
+        var result = _service.AddMember(list.Id, owner, "nonexistent@test.com", _userService);
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void SharedListService_AddMember_FailsForNonOwner()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var nonOwner = Guid.NewGuid().ToString();
+        var memberEmail = "member@test.com";
+        _userService.Register("Member", "User", memberEmail);
+
+        var list = _service.CreateSharedList(owner, "Test List");
+        var result = _service.AddMember(list.Id, nonOwner, memberEmail, _userService);
+
+        Assert.IsFalse(result);
+    }
+
+    [TestMethod]
+    public void SharedListService_AddMember_PreventsDuplicateMembers()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var memberEmail = "member@test.com";
+        _userService.Register("Member", "User", memberEmail);
+
+        var list = _service.CreateSharedList(owner, "Test List");
+        _service.AddMember(list.Id, owner, memberEmail, _userService);
+        var result = _service.AddMember(list.Id, owner, memberEmail, _userService);
+
+        Assert.IsFalse(result);
+        var updatedList = _service.GetSharedList(list.Id);
+        Assert.AreEqual(1, updatedList!.MemberIds.Count);
+    }
+
+    [TestMethod]
     public void SharedListService_CreateSharedList_CreatesListSuccessfully()
     {
         var userId = Guid.NewGuid().ToString();
@@ -44,6 +100,33 @@ public class SharedListServiceTests
         Assert.AreEqual(listName, result.Name);
         Assert.AreEqual(Guid.Parse(userId), result.OwnerId);
         Assert.AreEqual(0, result.MemberIds.Count);
+    }
+
+    [TestMethod]
+    public void SharedListService_DeleteSharedList_DeletesSuccessfully()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var list = _service.CreateSharedList(owner, "Test List");
+
+        var result = _service.DeleteSharedList(list.Id, owner);
+
+        Assert.IsTrue(result);
+        var deletedList = _service.GetSharedList(list.Id);
+        Assert.IsNull(deletedList);
+    }
+
+    [TestMethod]
+    public void SharedListService_DeleteSharedList_FailsForNonOwner()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var nonOwner = Guid.NewGuid().ToString();
+        var list = _service.CreateSharedList(owner, "Test List");
+
+        var result = _service.DeleteSharedList(list.Id, nonOwner);
+
+        Assert.IsFalse(result);
+        var stillExists = _service.GetSharedList(list.Id);
+        Assert.IsNotNull(stillExists);
     }
 
     [TestMethod]
@@ -97,70 +180,15 @@ public class SharedListServiceTests
     }
 
     [TestMethod]
-    public void SharedListService_AddMember_AddsUserSuccessfully()
+    public void SharedListService_HasAccess_ReturnsFalseForNonMember()
     {
         var owner = Guid.NewGuid().ToString();
-        var memberEmail = "member@test.com";
-        _userService.Register("Member", "User", memberEmail);
-
+        var nonMember = Guid.NewGuid().ToString();
         var list = _service.CreateSharedList(owner, "Test List");
-        var result = _service.AddMember(list.Id, owner, memberEmail, _userService);
 
-        Assert.IsTrue(result);
-        var updatedList = _service.GetSharedList(list.Id);
-        Assert.AreEqual(1, updatedList!.MemberIds.Count);
-    }
-
-    [TestMethod]
-    public void SharedListService_AddMember_FailsForNonOwner()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var nonOwner = Guid.NewGuid().ToString();
-        var memberEmail = "member@test.com";
-        _userService.Register("Member", "User", memberEmail);
-
-        var list = _service.CreateSharedList(owner, "Test List");
-        var result = _service.AddMember(list.Id, nonOwner, memberEmail, _userService);
+        var result = _service.HasAccess(list.Id, nonMember);
 
         Assert.IsFalse(result);
-    }
-
-    [TestMethod]
-    public void SharedListService_AddMember_FailsForNonExistentUser()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var list = _service.CreateSharedList(owner, "Test List");
-
-        var result = _service.AddMember(list.Id, owner, "nonexistent@test.com", _userService);
-
-        Assert.IsFalse(result);
-    }
-
-    [TestMethod]
-    public void SharedListService_AddMember_PreventsDuplicateMembers()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var memberEmail = "member@test.com";
-        _userService.Register("Member", "User", memberEmail);
-
-        var list = _service.CreateSharedList(owner, "Test List");
-        _service.AddMember(list.Id, owner, memberEmail, _userService);
-        var result = _service.AddMember(list.Id, owner, memberEmail, _userService);
-
-        Assert.IsFalse(result);
-        var updatedList = _service.GetSharedList(list.Id);
-        Assert.AreEqual(1, updatedList!.MemberIds.Count);
-    }
-
-    [TestMethod]
-    public void SharedListService_HasAccess_ReturnsTrueForOwner()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var list = _service.CreateSharedList(owner, "Test List");
-
-        var result = _service.HasAccess(list.Id, owner);
-
-        Assert.IsTrue(result);
     }
 
     [TestMethod]
@@ -179,13 +207,23 @@ public class SharedListServiceTests
     }
 
     [TestMethod]
-    public void SharedListService_HasAccess_ReturnsFalseForNonMember()
+    public void SharedListService_HasAccess_ReturnsTrueForOwner()
     {
         var owner = Guid.NewGuid().ToString();
-        var nonMember = Guid.NewGuid().ToString();
         var list = _service.CreateSharedList(owner, "Test List");
 
-        var result = _service.HasAccess(list.Id, nonMember);
+        var result = _service.HasAccess(list.Id, owner);
+
+        Assert.IsTrue(result);
+    }
+
+    [TestMethod]
+    public void SharedListService_LeaveSharedList_FailsForOwner()
+    {
+        var owner = Guid.NewGuid().ToString();
+        var list = _service.CreateSharedList(owner, "Test List");
+
+        var result = _service.LeaveSharedList(list.Id, owner);
 
         Assert.IsFalse(result);
     }
@@ -201,34 +239,6 @@ public class SharedListServiceTests
         _service.AddMember(list.Id, owner, memberEmail, _userService);
 
         var result = _service.LeaveSharedList(list.Id, member.Id.ToString());
-
-        Assert.IsTrue(result);
-        var updatedList = _service.GetSharedList(list.Id);
-        Assert.AreEqual(0, updatedList!.MemberIds.Count);
-    }
-
-    [TestMethod]
-    public void SharedListService_LeaveSharedList_FailsForOwner()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var list = _service.CreateSharedList(owner, "Test List");
-
-        var result = _service.LeaveSharedList(list.Id, owner);
-
-        Assert.IsFalse(result);
-    }
-
-    [TestMethod]
-    public void SharedListService_RemoveMember_RemovesUserSuccessfully()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var memberEmail = "member@test.com";
-        var member = _userService.Register("Member", "User", memberEmail);
-
-        var list = _service.CreateSharedList(owner, "Test List");
-        _service.AddMember(list.Id, owner, memberEmail, _userService);
-
-        var result = _service.RemoveMember(list.Id, owner, member.Id);
 
         Assert.IsTrue(result);
         var updatedList = _service.GetSharedList(list.Id);
@@ -252,17 +262,20 @@ public class SharedListServiceTests
     }
 
     [TestMethod]
-    public void SharedListService_RenameSharedList_RenamesSuccessfully()
+    public void SharedListService_RemoveMember_RemovesUserSuccessfully()
     {
         var owner = Guid.NewGuid().ToString();
-        var list = _service.CreateSharedList(owner, "Old Name");
-        var newName = "New Name";
+        var memberEmail = "member@test.com";
+        var member = _userService.Register("Member", "User", memberEmail);
 
-        var result = _service.RenameSharedList(list.Id, owner, newName);
+        var list = _service.CreateSharedList(owner, "Test List");
+        _service.AddMember(list.Id, owner, memberEmail, _userService);
+
+        var result = _service.RemoveMember(list.Id, owner, member.Id);
 
         Assert.IsTrue(result);
         var updatedList = _service.GetSharedList(list.Id);
-        Assert.AreEqual(newName, updatedList!.Name);
+        Assert.AreEqual(0, updatedList!.MemberIds.Count);
     }
 
     [TestMethod]
@@ -278,30 +291,17 @@ public class SharedListServiceTests
     }
 
     [TestMethod]
-    public void SharedListService_DeleteSharedList_DeletesSuccessfully()
+    public void SharedListService_RenameSharedList_RenamesSuccessfully()
     {
         var owner = Guid.NewGuid().ToString();
-        var list = _service.CreateSharedList(owner, "Test List");
+        var list = _service.CreateSharedList(owner, "Old Name");
+        var newName = "New Name";
 
-        var result = _service.DeleteSharedList(list.Id, owner);
+        var result = _service.RenameSharedList(list.Id, owner, newName);
 
         Assert.IsTrue(result);
-        var deletedList = _service.GetSharedList(list.Id);
-        Assert.IsNull(deletedList);
-    }
-
-    [TestMethod]
-    public void SharedListService_DeleteSharedList_FailsForNonOwner()
-    {
-        var owner = Guid.NewGuid().ToString();
-        var nonOwner = Guid.NewGuid().ToString();
-        var list = _service.CreateSharedList(owner, "Test List");
-
-        var result = _service.DeleteSharedList(list.Id, nonOwner);
-
-        Assert.IsFalse(result);
-        var stillExists = _service.GetSharedList(list.Id);
-        Assert.IsNotNull(stillExists);
+        var updatedList = _service.GetSharedList(list.Id);
+        Assert.AreEqual(newName, updatedList!.Name);
     }
 
     private class TestWebHostEnvironment : IWebHostEnvironment

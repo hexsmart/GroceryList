@@ -165,4 +165,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
     * Better separation of concerns (Razor views focus on markup, JS files focus on behavior)
   * Each JS file is self-contained with no shared functions between views
   * All functionality preserved and tested successfully
+* 🧹 **Fixed normal behavior compliance issues**
+  * Alphabetized test methods in `SharedListServiceTests.cs`
+  * Changed all markdown bullet points from `-` to `*` in `README-TODO.md` and `README-ActivityLog.md`
 

@@ -64,7 +64,3 @@ This document tracks established patterns and preferences for AI-assisted work o
 
 * This document should be updated as new patterns and preferences are established
 * When in doubt, ask for clarification rather than assuming
-
----
-
-**Last Updated**: 2026-04-08
