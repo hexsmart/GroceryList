@@ -283,10 +283,31 @@
         const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
         delete cart[id];
         localStorage.setItem('groceryCart', JSON.stringify(cart));
+        
+        // Find the item in category view to update its category count
+        const cartItem = document.getElementById('cart-' + id);
+        let section = null;
+        if (cartItem) {
+            section = cartItem.closest('[data-category]');
+        }
+        
+        // Remove both versions of the item
         ['cart-', 'flat-'].forEach(prefix => {
             const el = document.getElementById(prefix + id);
             if (el) el.remove();
         });
+        
+        // Update the category count badge if item was in a category
+        if (section) {
+            const catId = section.dataset.category.replace(/ /g, '-').replace(/&/g, 'and');
+            const badge = document.getElementById('count-' + catId);
+            if (badge) {
+                const total = section.querySelectorAll('#items-' + catId + ' li').length;
+                const selected = section.querySelectorAll('#items-' + catId + ' li.selected').length;
+                badge.textContent = selected > 0 ? `${selected}/${total}` : total;
+            }
+        }
+        
         const totalItems = document.querySelectorAll('#category-container li').length;
         if (totalItems === 0) {
             document.getElementById('empty-msg').style.display = 'block';
