@@ -1,0 +1,359 @@
+// Shop page - Cart display and management
+const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
+const catCollapsed = JSON.parse(localStorage.getItem('shopCatCollapsed') || '{}');
+// savedOrder is passed from the view via a global variable
+let flatMode = localStorage.getItem('shopFlatMode') === 'true';
+
+// emoji/category lookup from EmojiHelper (duplicated client-side for Shop page)
+const storeItems = [
+    {name:'Beer',emoji:'🍺',cat:'Beverages'},{name:'Coffee',emoji:'☕',cat:'Beverages'},
+    {name:'Diet Coke',emoji:'🥤',cat:'Beverages'},{name:'Juice',emoji:'🧃',cat:'Beverages'},
+    {name:'Soda',emoji:'🥤',cat:'Beverages'},{name:'Tea',emoji:'🍵',cat:'Beverages'},
+    {name:'Water',emoji:'💧',cat:'Beverages'},{name:'Wine',emoji:'🍷',cat:'Beverages'},
+    {name:'Bagel',emoji:'🥯',cat:'Bread & Grains'},{name:'Bread',emoji:'🍞',cat:'Bread & Grains'},
+    {name:'Cereal',emoji:'🥣',cat:'Bread & Grains'},{name:'Crackers',emoji:'🍘',cat:'Bread & Grains'},
+    {name:'Croissant',emoji:'🥐',cat:'Bread & Grains'},{name:'Noodles',emoji:'🍜',cat:'Bread & Grains'},
+    {name:'Oats',emoji:'🥣',cat:'Bread & Grains'},{name:'Pasta',emoji:'🍝',cat:'Bread & Grains'},
+    {name:'Rice',emoji:'🍚',cat:'Bread & Grains'},{name:'Tortillas',emoji:'🫓',cat:'Bread & Grains'},
+    {name:'Beans',emoji:'🫘',cat:'Condiments & Pantry'},{name:'Ketchup',emoji:'🍅',cat:'Condiments & Pantry'},
+    {name:'Mayonnaise',emoji:'🫙',cat:'Condiments & Pantry'},{name:'Mustard',emoji:'🟡',cat:'Condiments & Pantry'},
+    {name:'Oil',emoji:'🫙',cat:'Condiments & Pantry'},{name:'Salt',emoji:'🧂',cat:'Condiments & Pantry'},
+    {name:'Sauce',emoji:'🫙',cat:'Condiments & Pantry'},{name:'Soup',emoji:'🍲',cat:'Condiments & Pantry'},
+    {name:'Sugar',emoji:'🍬',cat:'Condiments & Pantry'},{name:'Vinegar',emoji:'🫙',cat:'Condiments & Pantry'},
+    {name:'Butter',emoji:'🧈',cat:'Dairy'},{name:'Cheese',emoji:'🧀',cat:'Dairy'},
+    {name:'Cream',emoji:'🥛',cat:'Dairy'},{name:'Eggs',emoji:'🥚',cat:'Dairy'},
+    {name:'Milk',emoji:'🥛',cat:'Dairy'},{name:'Yogurt',emoji:'🥛',cat:'Dairy'},
+    {name:'Frozen Foods',emoji:'🧊',cat:'Frozen'},{name:'Pizza',emoji:'🍕',cat:'Frozen'},
+    {name:'Detergent',emoji:'🫧',cat:'Household'},{name:'Paper Towels',emoji:'🧻',cat:'Household'},
+    {name:'Shampoo',emoji:'🧴',cat:'Household'},{name:'Soap',emoji:'🧼',cat:'Household'},
+    {name:'Toilet Paper',emoji:'🧻',cat:'Household'},{name:'Toothbrush',emoji:'🪥',cat:'Household'},
+    {name:'Toothpaste',emoji:'🪥',cat:'Household'},
+    {name:'Bacon',emoji:'🥓',cat:'Meat & Seafood'},{name:'Beef',emoji:'🥩',cat:'Meat & Seafood'},
+    {name:'Chicken',emoji:'🍗',cat:'Meat & Seafood'},{name:'Crab',emoji:'🦀',cat:'Meat & Seafood'},
+    {name:'Fish',emoji:'🐟',cat:'Meat & Seafood'},{name:'Ham',emoji:'🍖',cat:'Meat & Seafood'},
+    {name:'Lobster',emoji:'🦞',cat:'Meat & Seafood'},{name:'Pork',emoji:'🥩',cat:'Meat & Seafood'},
+    {name:'Salmon',emoji:'🐟',cat:'Meat & Seafood'},{name:'Sausage',emoji:'🌭',cat:'Meat & Seafood'},
+    {name:'Shrimp',emoji:'🍤',cat:'Meat & Seafood'},{name:'Steak',emoji:'🥩',cat:'Meat & Seafood'},
+    {name:'Turkey',emoji:'🦃',cat:'Meat & Seafood'},
+    {name:'Apple',emoji:'🍎',cat:'Produce'},{name:'Avocado',emoji:'🥑',cat:'Produce'},
+    {name:'Banana',emoji:'🍌',cat:'Produce'},{name:'Broccoli',emoji:'🥦',cat:'Produce'},
+    {name:'Carrot',emoji:'🥕',cat:'Produce'},{name:'Cherries',emoji:'🍒',cat:'Produce'},
+    {name:'Coconut',emoji:'🥥',cat:'Produce'},{name:'Corn',emoji:'🌽',cat:'Produce'},
+    {name:'Cucumber',emoji:'🥒',cat:'Produce'},{name:'Eggplant',emoji:'🍆',cat:'Produce'},
+    {name:'Garlic',emoji:'🧄',cat:'Produce'},{name:'Grapes',emoji:'🍇',cat:'Produce'},
+    {name:'Lemon',emoji:'🍋',cat:'Produce'},{name:'Lettuce',emoji:'🥬',cat:'Produce'},
+    {name:'Mango',emoji:'🥭',cat:'Produce'},{name:'Mushrooms',emoji:'🍄',cat:'Produce'},
+    {name:'Onion',emoji:'🧅',cat:'Produce'},{name:'Orange',emoji:'🍊',cat:'Produce'},
+    {name:'Peach',emoji:'🍑',cat:'Produce'},{name:'Pear',emoji:'🍐',cat:'Produce'},
+    {name:'Peppers',emoji:'🫑',cat:'Produce'},{name:'Pineapple',emoji:'🍍',cat:'Produce'},
+    {name:'Potato',emoji:'🥔',cat:'Produce'},{name:'Spinach',emoji:'🥬',cat:'Produce'},
+    {name:'Strawberries',emoji:'🍓',cat:'Produce'},{name:'Tomato',emoji:'🍅',cat:'Produce'},
+    {name:'Watermelon',emoji:'🍉',cat:'Produce'},
+    {name:'Cake',emoji:'🎂',cat:'Snacks & Sweets'},{name:'Candy',emoji:'🍬',cat:'Snacks & Sweets'},
+    {name:'Chips',emoji:'🍟',cat:'Snacks & Sweets'},{name:'Chocolate',emoji:'🍫',cat:'Snacks & Sweets'},
+    {name:'Cookies',emoji:'🍪',cat:'Snacks & Sweets'},{name:'Honey',emoji:'🍯',cat:'Snacks & Sweets'},
+    {name:'Ice Cream',emoji:'🍦',cat:'Snacks & Sweets'},{name:'Nuts',emoji:'🥜',cat:'Snacks & Sweets'},
+    {name:'Popcorn',emoji:'🍿',cat:'Snacks & Sweets'},
+];
+
+function getCategory(name) {
+    const lower = name.toLowerCase();
+    const match = storeItems.find(i => lower.includes(i.name.toLowerCase()));
+    return match ? match.cat : 'Other';
+}
+
+function buildViews() {
+    if (Object.keys(cart).length === 0) {
+        document.getElementById('empty-msg').style.display = 'block';
+        return;
+    }
+
+    document.getElementById('shop-controls').style.display = 'flex';
+    document.getElementById('clear-all-btn').style.display = 'inline-block';
+
+    // Group items by category
+    const groups = {};
+    Object.entries(cart).forEach(([id, name]) => {
+        const cat = getCategory(name);
+        if (!groups[cat]) groups[cat] = [];
+        groups[cat].push({ id, name });
+    });
+
+    // Sort categories by saved order
+    let cats = Object.keys(groups).sort();
+    if (savedOrder.length) {
+        cats = cats.sort((a, b) => {
+            const ai = savedOrder.indexOf(a), bi = savedOrder.indexOf(b);
+            if (ai === -1 && bi === -1) return a.localeCompare(b);
+            if (ai === -1) return 1;
+            if (bi === -1) return -1;
+            return ai - bi;
+        });
+    }
+
+    const container = document.getElementById('category-container');
+    const flatList = document.getElementById('flat-list');
+
+    cats.forEach(cat => {
+        const catId = cat.replace(/ /g, '-').replace(/&/g, 'and');
+
+        // Category section
+        const section = document.createElement('div');
+        section.className = 'mb-3';
+        section.dataset.category = cat;
+
+        const header = document.createElement('div');
+        header.className = 'd-flex align-items-center gap-2 mb-1';
+        header.innerHTML = `
+            <button type="button" class="btn btn-sm btn-link p-0 text-decoration-none fw-bold fs-5 text-dark"
+                    onclick="toggleCollapse('${catId}')">
+                <span id="chevron-${catId}">▾</span> ${cat}
+                <span class="badge bg-secondary ms-1" id="count-${catId}">${groups[cat].length}</span>
+            </button>`;
+        section.appendChild(header);
+
+        const itemsDiv = document.createElement('div');
+        itemsDiv.id = 'items-' + catId;
+        itemsDiv.className = 'category-items';
+
+        const ul = document.createElement('ul');
+        ul.className = 'list-group mb-2';
+
+        groups[cat].forEach(({ id, name }) => {
+            ul.appendChild(makeItem(id, name));
+        });
+
+        itemsDiv.appendChild(ul);
+        section.appendChild(itemsDiv);
+        container.appendChild(section);
+
+        // Restore collapsed
+        if (catCollapsed[catId]) {
+            itemsDiv.classList.add('collapsed');
+            document.getElementById('chevron-' + catId).textContent = '▸';
+        }
+    });
+
+    // Build flat list alphabetically
+    const allItems = Object.entries(cart).map(([id, name]) => ({ id, name }));
+    allItems.sort((a, b) => a.name.localeCompare(b.name));
+    allItems.forEach(({ id, name }) => flatList.appendChild(makeFlatItem(id, name)));
+
+    applyViewMode();
+
+    // Category reordering is disabled on this page (use Store page to reorder)
+}
+
+function makeItem(id, name) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.id = 'cart-' + id;
+    li.style.cursor = 'pointer';
+    li.innerHTML = `
+        <div class="d-flex align-items-center gap-2">
+            <input type="checkbox" class="form-check-input mt-0 row-checkbox" onclick="event.stopPropagation(); toggleItem(this.closest('li'))">
+            <span class="fw-semibold">${name}</span>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
+    li.addEventListener('click', e => {
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') {
+            toggleItem(li);
+        }
+    });
+    return li;
+}
+
+function toggleItem(li) {
+    const isSelected = li.classList.toggle('selected');
+    const cb = li.querySelector('.row-checkbox');
+    if (cb) cb.checked = isSelected;
+    updateCategoryCount(li);
+
+    // Sync counterpart in the other view
+    const otherId = li.id.startsWith('cart-')
+        ? 'flat-' + li.id.slice(5)
+        : 'cart-' + li.id.slice(5);
+    const other = document.getElementById(otherId);
+    if (other) {
+        other.classList.toggle('selected', isSelected);
+        const otherCb = other.querySelector('.row-checkbox');
+        if (otherCb) otherCb.checked = isSelected;
+    }
+}
+
+function updateCategoryCount(li) {
+    const section = li.closest('[data-category]');
+    if (!section) return;
+    const catId = section.dataset.category.replace(/ /g, '-').replace(/&/g, 'and');
+    const badge = document.getElementById('count-' + catId);
+    if (!badge) return;
+    const total = section.querySelectorAll('#items-' + catId + ' li').length;
+    const selected = section.querySelectorAll('#items-' + catId + ' li.selected').length;
+    badge.textContent = selected > 0 ? `${selected}/${total}` : total;
+}
+
+function makeFlatItem(id, name) {
+    const li = document.createElement('li');
+    li.className = 'list-group-item d-flex justify-content-between align-items-center';
+    li.id = 'flat-' + id;
+    li.style.cursor = 'pointer';
+    li.innerHTML = `
+        <div class="d-flex align-items-center gap-2">
+            <input type="checkbox" class="form-check-input mt-0 row-checkbox" onclick="event.stopPropagation(); toggleItem(this.closest('li'))">
+            <span class="fw-semibold">${name}</span>
+        </div>
+        <button class="btn btn-sm btn-danger" onclick="removeItem('${id}')">🗑️</button>`;
+    li.addEventListener('click', e => {
+        if (e.target.tagName !== 'BUTTON' && e.target.tagName !== 'INPUT') toggleItem(li);
+    });
+    return li;
+}
+
+function toggleCollapse(catId) {
+    const items = document.getElementById('items-' + catId);
+    const chevron = document.getElementById('chevron-' + catId);
+    const isCollapsed = items.classList.toggle('collapsed');
+    chevron.textContent = isCollapsed ? '▸' : '▾';
+    catCollapsed[catId] = isCollapsed;
+    localStorage.setItem('shopCatCollapsed', JSON.stringify(catCollapsed));
+}
+
+function applyViewMode() {
+    const container = document.getElementById('category-container');
+    const flatList = document.getElementById('flat-list');
+    const btn = document.getElementById('view-toggle-btn');
+    if (flatMode) {
+        container.style.display = 'none';
+        flatList.style.display = '';
+        btn.textContent = '🗂️ Category View';
+    } else {
+        container.style.display = '';
+        flatList.style.display = 'none';
+        btn.textContent = '📋 Flat View';
+        // Refresh all category badges to reflect current selection
+        document.querySelectorAll('#category-container > [data-category]').forEach(section => {
+            const catId = section.dataset.category.replace(/ /g, '-').replace(/&/g, 'and');
+            const badge = document.getElementById('count-' + catId);
+            if (!badge) return;
+            const total = section.querySelectorAll('li').length;
+            const selected = section.querySelectorAll('li.selected').length;
+            badge.textContent = selected > 0 ? `${selected}/${total}` : total;
+        });
+    }
+}
+
+function toggleViewMode() {
+    flatMode = !flatMode;
+    localStorage.setItem('shopFlatMode', flatMode);
+    applyViewMode();
+}
+
+function removeItem(id) {
+    const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
+    delete cart[id];
+    localStorage.setItem('groceryCart', JSON.stringify(cart));
+    
+    // Find the item in category view to update its category count
+    const cartItem = document.getElementById('cart-' + id);
+    let section = null;
+    if (cartItem) {
+        section = cartItem.closest('[data-category]');
+    }
+    
+    // Remove both versions of the item
+    ['cart-', 'flat-'].forEach(prefix => {
+        const el = document.getElementById(prefix + id);
+        if (el) el.remove();
+    });
+    
+    // Update the category count badge if item was in a category
+    if (section) {
+        const catId = section.dataset.category.replace(/ /g, '-').replace(/&/g, 'and');
+        const badge = document.getElementById('count-' + catId);
+        if (badge) {
+            const total = section.querySelectorAll('#items-' + catId + ' li').length;
+            const selected = section.querySelectorAll('#items-' + catId + ' li.selected').length;
+            badge.textContent = selected > 0 ? `${selected}/${total}` : total;
+        }
+    }
+    
+    const totalItems = document.querySelectorAll('#category-container li').length;
+    if (totalItems === 0) {
+        document.getElementById('empty-msg').style.display = 'block';
+        document.getElementById('shop-controls').style.display = 'none';
+        document.getElementById('clear-all-btn').style.display = 'none';
+    }
+}
+
+function clearAll() {
+    localStorage.removeItem('groceryCart');
+    document.getElementById('category-container').innerHTML = '';
+    document.getElementById('flat-list').innerHTML = '';
+    document.getElementById('empty-msg').style.display = 'block';
+    document.getElementById('shop-controls').style.display = 'none';
+    document.getElementById('clear-all-btn').style.display = 'none';
+}
+
+function copyListToClipboard(btn) {
+    const cart = JSON.parse(localStorage.getItem('groceryCart') || '{}');
+    if (Object.keys(cart).length === 0) {
+        alert('Your cart is empty!');
+        return;
+    }
+    
+    let text = '';
+    
+    if (flatMode) {
+        // Flat view: copy items in alphabetical order
+        const items = Object.values(cart);
+        items.sort((a, b) => a.localeCompare(b));
+        text = items.join('\n');
+    } else {
+        // Category view: copy items grouped by category in current order
+        const groups = {};
+        Object.entries(cart).forEach(([id, name]) => {
+            const cat = getCategory(name);
+            if (!groups[cat]) groups[cat] = [];
+            groups[cat].push(name);
+        });
+        
+        // Sort categories by saved order (same as display)
+        let cats = Object.keys(groups).sort();
+        if (savedOrder.length) {
+            cats = cats.sort((a, b) => {
+                const ai = savedOrder.indexOf(a), bi = savedOrder.indexOf(b);
+                if (ai === -1 && bi === -1) return a.localeCompare(b);
+                if (ai === -1) return 1;
+                if (bi === -1) return -1;
+                return ai - bi;
+            });
+        }
+        
+        // Build text with category headers
+        const lines = [];
+        cats.forEach(cat => {
+            lines.push(''); // Blank line before category (except first)
+            lines.push(cat + ':');
+            groups[cat].sort((a, b) => a.localeCompare(b));
+            groups[cat].forEach(name => lines.push('  ' + name));
+        });
+        text = lines.slice(1).join('\n'); // Remove first blank line
+    }
+    
+    // Copy to clipboard
+    navigator.clipboard.writeText(text).then(() => {
+        // Show brief success message
+        const originalText = btn.textContent;
+        btn.textContent = '✅ Copied!';
+        btn.classList.remove('btn-success');
+        btn.classList.add('btn-success');
+        setTimeout(() => {
+            btn.textContent = originalText;
+        }, 2000);
+    }).catch(err => {
+        alert('Failed to copy to clipboard: ' + err);
+    });
+}
+
+// Initialize views on page load
+buildViews();
