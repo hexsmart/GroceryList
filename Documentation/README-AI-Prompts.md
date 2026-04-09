@@ -139,7 +139,9 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
 * 📋 **Added Copy List button on Shop page**
   * New "Copy List" button copies all cart items to clipboard
   * Each item appears on its own line with emoji included
-  * Items sorted alphabetically for easy reading
+  * Respects current view mode:
+    * Flat view: Items sorted alphabetically
+    * Category view: Items grouped by category with headers, indented items
   * Designed for texting shopping list to others
   * Shows brief success confirmation after copying
   * Category order can now only be changed via the Store page
