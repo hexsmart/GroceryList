@@ -145,6 +145,7 @@ This document tracks all AI-assisted changes made to the Grocery List app using 
     * Category view: Items grouped by category with headers, indented items
   * Designed for texting shopping list to others
   * Shows brief success confirmation after copying
+  * Fixed category count badge to update when deleting items
   * Category order can now only be changed via the Store page
   * Prevents confusion from accidental category reordering on other pages
   * Fixed category order sync by updating localStorage when reordering on Store page
